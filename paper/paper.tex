@@ -30,7 +30,7 @@
 \maketitle
 
 \begin{abstract}
-Commercial large language models bill, throttle, and budget context per token. Yet tokenizers assign more subword tokens to the same meaning in some languages than in others, so speakers of high-fertility languages pay a structural penalty before a model is ever invoked. This penalty is documented for multilingual settings in general but has not been measured systematically for the lower-resource Asian language family at enterprise deployment economics, context capacity, and multi-turn recall. We measure it across 16 Asian languages spanning five language families and twelve scripts (Latin, Devanagari, Bengali, Sinhala, Tamil, Telugu, Kannada, Malayalam, Myanmar, Khmer, Lao, Thai), using parallel corpora so that the language effect is isolated from content. Across 7 frontier and open tokenizers on FLORES-200 dev (n=997), every non-Latin Asian language carries a tokenization premium above English (median 4.6$\times$ on the cl100k\_base tokenizer, up to 11.7$\times$ for Burmese), with bootstrap 95\% confidence intervals. The penalty is largest for Brahmic-derived scripts (reaching 8--12$\times$ on cl100k\_base) and is mitigated 3--6$\times$ by switching to a byte-level tokenizer (o200k\_base). Translated into deployment terms, this results in up to 11.7$\times$ inference cost and as little as 8\% of English's effective context window. We additionally measure multi-turn recall via a 540-call needle-in-haystack benchmark with script-native markers; we find no recall degradation up to 32k context inside three frontier and open models' advertised windows. We release an open measurement tool (\texttt{asia-fertility}), a reproducible leaderboard, and a results dataset on HuggingFace. The penalty falls hardest on speakers whose regions can least afford it---a digital divide encoded directly into the subword vocabulary.
+Commercial large language models bill, throttle, and budget context per token. Yet tokenizers assign more subword tokens to the same meaning in some languages than in others, so speakers of high-fertility languages pay a structural penalty before a model is ever invoked. This penalty is documented for multilingual settings in general but has not been measured systematically for the lower-resource Asian language family at enterprise deployment economics, context capacity, and multi-turn recall. We measure it across 16 Asian languages spanning five language families and twelve scripts (Latin, Devanagari, Bengali, Sinhala, Tamil, Telugu, Kannada, Malayalam, Myanmar, Khmer, Lao, Thai), using parallel corpora so that the language effect is isolated from content. Across 7 frontier and open tokenizers on FLORES-200 dev (n=997), every non-Latin Asian language carries a tokenization premium above English (median 4.6$\times$ on the cl100k\_base tokenizer, up to 11.7$\times$ for Burmese), with bootstrap 95\% confidence intervals. The penalty is largest for Brahmic-derived scripts (reaching 8--12$\times$ on cl100k\_base) and is mitigated 3--6$\times$ by switching to a byte-level tokenizer (o200k\_base). Translated into deployment terms, this results in up to 11.7$\times$ inference cost and as little as 8\% of English's effective context window. We additionally measure multi-turn recall via a 536-call needle-in-haystack benchmark with script-native markers across three frontier and open models. Contrary to the original FertiScope hackathon pilot (which used Latin markers), we observe a dramatic recall collapse on non-Latin scripts: at all tested fill levels including 4k well inside every model's window, recall on Hindi, Tamil, Burmese, and Lao falls to 0--7\% on gpt-4o-mini, gpt-3.5-turbo, and llama-3.1-8b-instruct, while English and Vietnamese (Latin script) reach 77--100\%. We interpret this as evidence of tokenizer-induced representation loss of marker phrases under script-native fragmentation, distinct from prior ``lost in the middle'' findings. We release an open measurement tool (\texttt{asia-fertility}), a reproducible leaderboard, and a results dataset on HuggingFace. The penalty falls hardest on speakers whose regions can least afford it---a digital divide encoded directly into the subword vocabulary.
 \end{abstract}
 
 \section{Introduction}
@@ -140,7 +140,7 @@ Figure~\ref{fig:heatmap} shows the same-content cost ratio for all (language, to
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.95\textwidth]{../runs/main/figures/fig1_heatmap.pdf}
+\includegraphics[width=0.95\textwidth]{fig1_heatmap.png}
 \caption{Same-content cost ratio (vs.\ English) by language $\times$ tokenizer. Lower is better. Rows sorted by maximum cost across tokenizers; the five highest cells annotated.}
 \label{fig:heatmap}
 \end{figure}
@@ -149,7 +149,7 @@ Figure~\ref{fig:script} shows the cl100k cost ratio bars colored by script, with
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.85\textwidth]{../runs/main/figures/fig2_premium_by_script.pdf}
+\includegraphics[width=0.85\textwidth]{fig2_premium_by_script.png}
 \caption{Same-content cost ratio on cl100k\_base, by language, with 95\% bootstrap CIs. Color encodes script. Burmese (Mymr) and Lao (Laoo) dominate.}
 \label{fig:script}
 \end{figure}
@@ -160,7 +160,7 @@ Because price-per-token is constant within an API, the same-content token ratio 
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.85\textwidth]{../runs/main/figures/fig3_cost.pdf}
+\includegraphics[width=0.85\textwidth]{fig3_cost.png}
 \caption{Estimated monthly cost in USD at 100{,}000 requests/month, GPT-4 Turbo input pricing, by language. English baseline marked with the dashed line.}
 \label{fig:cost}
 \end{figure}
@@ -171,14 +171,14 @@ Figure~\ref{fig:exhaustion} plots cumulative tokens across turns at 100 words/tu
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.85\textwidth]{../runs/main/figures/fig4_context_exhaustion.pdf}
+\includegraphics[width=0.85\textwidth]{fig4_context_exhaustion.png}
 \caption{Cumulative context use across turns (100 words/turn) on cl100k\_base. Dots mark where each language crosses the 4096-token window.}
 \label{fig:exhaustion}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.85\textwidth]{../runs/main/figures/fig5_in_context_capacity.pdf}
+\includegraphics[width=0.85\textwidth]{fig5_in_context_capacity.png}
 \caption{Number of 100-word in-context examples that fit in an 8192-token window (cl100k\_base). High-cost languages fit roughly an order of magnitude fewer.}
 \label{fig:capacity}
 \end{figure}
@@ -212,7 +212,7 @@ This contradicts the conclusion of the original FertiScope hackathon pilot (\cit
 Three observations:
 \begin{enumerate}
     \item \textbf{The collapse is not a function of context length.} Hindi recall is 0\% even at 4k tokens, well inside every model's window. This rules out the ``tokens $\approx$ degradation'' window-edge hypothesis.
-    \item \textbf{The collapse correlates with script-native marker tokenization.} The Tamil marker \texttt{குறி-உதயம்-924} tokenizes to 13 tokens on cl100k\_base; the Latin marker \texttt{MARKER-AURORA-9241} tokenizes to 8 tokens. The subword fragmentation of the marker itself plausibly destroys the exact-substring signal that NIAH recall relies on.
+    \item \textbf{The collapse correlates with script-native marker tokenization.} A representative Tamil marker (5 visible glyphs meaning ``mark-dawn-924'') tokenizes to 13 tokens on cl100k\_base; the Latin marker \texttt{MARKER-AURORA-9241} tokenizes to 8 tokens. The subword fragmentation of the marker itself plausibly destroys the exact-substring signal that NIAH recall relies on. Markers in source code are listed in the repository's \texttt{src/asia\_fertility/niah/markers.py}.
     \item \textbf{Frontier models do not compensate.} gpt-4o-mini's perfect English/Vietnamese recall and zero Hindi/Burmese/Lao recall suggests the issue is not capability but the input-token representation of the marker.
 \end{enumerate}
 
@@ -222,7 +222,7 @@ Figure~\ref{fig:recall} plots cost ratio vs.\ mean recall on cl100k\_base for th
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.85\textwidth]{../runs/main/figures/fig6_premium_vs_recall.pdf}
+\includegraphics[width=0.85\textwidth]{fig6_premium_vs_recall.png}
 \caption{Cost ratio vs.\ mean NIAH recall (pooled over positions, trials, and models) at fill levels up to 32k tokens. No recall degradation is observed within model windows; the cost penalty is upstream of any accuracy effect.}
 \label{fig:recall}
 \end{figure}
