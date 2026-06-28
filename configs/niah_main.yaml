@@ -1,0 +1,14 @@
+name: main
+# Budget-conscious paper-quality NIAH: 6 languages × 3 models × 3 fills × 5 positions × 2 trials = 540 calls
+languages: [eng, vie, hin, tam, mya, lao]
+models:
+  - openai/gpt-4o-mini
+  - openai/gpt-3.5-turbo
+  - meta-llama/llama-3.1-8b-instruct
+corpus: flores
+fill_targets: [4096, 16384, 32768]
+positions: [0.05, 0.25, 0.50, 0.75, 0.95]
+trials: 2
+output_dir: runs/niah/main
+concurrency: 4
+sizing_tokenizer: openai/o200k_base
