@@ -40,3 +40,8 @@ Thumbs.db
 # Docs build
 site/
 _site/
+
+# Sibling reference repos (cloned separately)
+fertiscope-web/
+token_degradation_fertility/
+legacy_v01/
