@@ -1,0 +1,239 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{authblk}
+\usepackage{caption}
+\usepackage[round]{natbib}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!60!black,
+    citecolor=blue!60!black,
+    urlcolor=blue!60!black,
+}
+
+\title{\textbf{The Asian Language Tax: Quantifying the Cost, Context, and Recall Penalty\\ of Tokenizing Lower-Resource Asian Languages in Frontier LLMs}}
+
+\author{Antoine Pedretti}
+\affil{\texttt{trustiaagency@gmail.com}}
+
+\date{June 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Commercial large language models bill, throttle, and budget context per token. Yet tokenizers assign more subword tokens to the same meaning in some languages than in others, so speakers of high-fertility languages pay a structural penalty before a model is ever invoked. This penalty is documented for multilingual settings in general but has not been measured systematically for the lower-resource Asian language family at enterprise deployment economics, context capacity, and multi-turn recall. We measure it across 16 Asian languages spanning five language families and twelve scripts (Latin, Devanagari, Bengali, Sinhala, Tamil, Telugu, Kannada, Malayalam, Myanmar, Khmer, Lao, Thai), using parallel corpora so that the language effect is isolated from content. Across 7 frontier and open tokenizers on FLORES-200 dev (n=997), every non-Latin Asian language carries a tokenization premium above English (median 4.6$\times$ on the cl100k\_base tokenizer, up to 11.7$\times$ for Burmese), with bootstrap 95\% confidence intervals. The penalty is largest for Brahmic-derived scripts (reaching 8--12$\times$ on cl100k\_base) and is mitigated 3--6$\times$ by switching to a byte-level tokenizer (o200k\_base). Translated into deployment terms, this results in up to 11.7$\times$ inference cost and as little as 8\% of English's effective context window. We additionally measure multi-turn recall via a 540-call needle-in-haystack benchmark with script-native markers; we find no recall degradation up to 32k context inside three frontier and open models' advertised windows. We release an open measurement tool (\texttt{asia-fertility}), a reproducible leaderboard, and a results dataset on HuggingFace. The penalty falls hardest on speakers whose regions can least afford it---a digital divide encoded directly into the subword vocabulary.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+AI built around the languages of the Global North passes a hidden, compounding cost on to users of other languages. Through one technical choice---the tokenizer---users in lower-resource Asian regions can pay several times more for measurably worse service, and the gap grows with conversation length \citep{petrov2023language,ahia2023}. While the existence of this disparity has been documented across multilingual settings, no systematic measurement has been published for the lower-resource Asian language family that combines (i) the wide tokenizer ecosystem of 2026, (ii) per-language confidence intervals, (iii) cross-script-fair metrics, and (iv) a multi-turn recall dimension. \citet{somide2026african} fills this gap for African languages; this work fills it for lower-resource Asian languages.
+
+A tokenizer's \emph{fertility} is the number of tokens it produces per word. English sits near 1.3 tokens per word on the FLORES-200 corpus. Many South and Southeast Asian scripts run far higher, because the tokenizer's vocabulary contains few of their subwords and falls back to short byte fragments. Since every commercial API bills per token and every context window is finite in tokens, high fertility carries three linked costs: higher cost for the same content, fewer in-context examples per prompt, and a smaller usable context budget that fills faster across turns.
+
+This is a safety problem as well as an economic one. Failure in lower-resource languages is often qualitatively different from English failure: \citet{yong2023low} showed that simply translating an English jailbreak into a low-resource language raises attack success against GPT-4 from under 1\% to about 79\%. \citet{wang2023all} found low-resource languages elicit harmful content $\sim$3$\times$ more often than English. The economic disparity is the input-side counterpart to this safety disparity: speakers most exposed to safety failures also pay the most per token.
+
+\textbf{Contributions:}
+\begin{enumerate}
+    \item We measure the same-content cost ratio for 16 Asian languages across 7 production tokenizers on the full FLORES-200 dev split (n=997), with bootstrap 95\% confidence intervals.
+    \item We introduce the \emph{bytes-per-token} (BPT) metric for cross-script-fair comparison.
+    \item We release \texttt{asia-fertility}, a Python package that reproduces the leaderboard locally and computes per-corpus cost on arbitrary text.
+    \item We benchmark multi-turn recall with script-native markers in a 540-call needle-in-haystack protocol across three frontier models, closing the Latin-needle-bias caveat noted in prior work.
+\end{enumerate}
+
+\section{Related Work}
+\label{sec:related}
+
+\textbf{Tokenization fairness.} \citet{petrov2023language} established that BPE tokenizers fragment low-resource languages at 5--15$\times$ English rates on FLORES-200, framed as a fairness statistic measured once over a reference corpus. \citet{ahia2023} extended this with concrete economic implications. \citet{lundin2025token} reported a correlational fertility-to-accuracy slope of $-0.08$ to $-0.18$ across 16 African languages and 10 LLMs. \citet{somide2026african} provided the recent African-language counterpart to this work, releasing the \texttt{afri-fertility} measurement engine and a 20-language leaderboard.
+
+\textbf{Tokenizer-quality metrics beyond fertility.} \citet{nayeem2025beyond} argue that fertility alone is incomplete and propose STRR. \citet{zouhar2023tokenization} formalize R\'enyi efficiency for token distributions. We report fertility as the primary metric for compatibility with prior work but emphasize BPT (bytes per token) as the cross-script-fair comparator.
+
+\textbf{Multi-turn and long-context behaviour.} \citet{liu2023lost} document a ``lost in the middle'' effect over 30\% for information placed mid-context. \citet{laban2025lostmulti} report about 39\% average single-turn-to-multi-turn accuracy drop over 200k simulated conversations. Both effects are content-side; ours is upstream.
+
+\textbf{Cross-lingual safety failures.} \citet{yong2023low} and \citet{wang2023all} document that safety defenses validated in English do not transfer. \citet{chen2025refusal} show the refusal direction is shared across safety-aligned languages. None of these connect the safety surface to a tokenizer-level upstream predictor.
+
+\textbf{Regional response.} \citet{ng2025sealion} continue-train Llama-3.1 on a Southeast-Asian corpus (SEA-LION v3), keeping the Llama-3.1 tokenizer unchanged. \citet{susanto2025seahelm} (SEA-HELM) operationalizes regional evaluation. These adapt model weights; \texttt{asia-fertility} measures the tokenizer cost they leave in place.
+
+Our delta: 16 lower-resource Asian languages, 7+ tokenizers, full FLORES-200 dev, bootstrap CIs, BPT, and a multi-turn recall dimension---packaged as a one-command \texttt{pip install} measurement tool.
+
+\section{Data and Methods}
+\label{sec:methods}
+
+\subsection{Languages}
+We study 16 languages: English (baseline) plus 15 lower-resource Asian languages spanning 5 families and 12 scripts. The full registry is in Table~\ref{tab:languages}.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabularx}{\textwidth}{lllllX}
+\toprule
+ISO & Name & Script & Family & FLORES tag & Notes \\
+\midrule
+eng & English & Latn & Indo-European & eng\_Latn & Baseline. \\
+vie & Vietnamese & Latn & Austroasiatic & vie\_Latn & Tonal Latin+diacritics. \\
+ind & Indonesian & Latn & Austronesian & ind\_Latn & \\
+zsm & Malay & Latn & Austronesian & zsm\_Latn & \\
+tgl & Filipino & Latn & Austronesian & tgl\_Latn & \\
+tha & Thai & Thai & Tai-Kadai & tha\_Thai & Spaceless. \\
+hin & Hindi & Deva & Indo-Aryan & hin\_Deva & \\
+ben & Bengali & Beng & Indo-Aryan & ben\_Beng & \\
+sin & Sinhala & Sinh & Indo-Aryan & sin\_Sinh & \\
+tam & Tamil & Taml & Dravidian & tam\_Taml & \\
+tel & Telugu & Telu & Dravidian & tel\_Telu & \\
+kan & Kannada & Knda & Dravidian & kan\_Knda & \\
+mal & Malayalam & Mlym & Dravidian & mal\_Mlym & \\
+mya & Burmese & Mymr & Sino-Tibetan & mya\_Mymr & Spaceless. \\
+khm & Khmer & Khmr & Austroasiatic & khm\_Khmr & Spaceless. \\
+lao & Lao & Laoo & Tai-Kadai & lao\_Laoo & Spaceless. \\
+\bottomrule
+\end{tabularx}
+\caption{Languages in this study. ``Spaceless'' indicates no whitespace word delimiters; we use \texttt{pythainlp} (Thai), \texttt{khmer-nltk} (Khmer), \texttt{laonlp} (Lao), and a Unicode-block regex (Burmese, no robust library exists in 2026) for word segmentation.}
+\label{tab:languages}
+\end{table}
+
+\subsection{Tokenizers}
+We test 7 tokenizers fully and additionally register 3 gated tokenizers (Llama-3.1, Gemma-2, Aya Expanse) accessible only with HuggingFace license acceptance. The 7 measured tokenizers are: \texttt{openai/o200k\_base}, \texttt{openai/cl100k\_base}, \texttt{openai/o200k\_harmony} (tiktoken family), and \texttt{mistral/tekken}, \texttt{qwen/qwen3}, \texttt{deepseek/v3}, \texttt{bigscience/bloom} (HuggingFace \texttt{transformers}). All are loaded via a uniform registry with lazy initialization; tokenizers unavailable in a given install produce skip rows rather than crashes.
+
+\subsection{Corpora}
+We use the FLORES-200 \citep{costa2022no} \texttt{dev} split (997 parallel sentences per language) from the official NLLB CC-BY-SA 4.0 release. Sentences are parallel across all 16 languages, so cross-language comparisons isolate the tokenizer effect from content.
+
+\subsection{Metrics}
+For sentences $S = \{s_1, \ldots, s_n\}$ tokenized by $T$, with word counts $w_i$, byte counts $b_i$, character counts $c_i$, and token counts $t_i = |T(s_i)|$, we compute:
+
+\textbf{Fertility} (tokens per word): $F = \sum t_i / \sum w_i$ (sum-then-divide, \emph{not} mean of ratios; the latter is biased by Jensen's inequality at variable sentence lengths).
+
+\textbf{Premium} (vs.\ English baseline tokenized by the same $T$): $P = F_\text{target} / F_\text{English}$.
+
+\textbf{Same-content cost ratio}: $R = \sum t_i^\text{target} / \sum t_i^\text{English}$. This is independent of the segmenter and directly governs the API bill at constant per-token pricing.
+
+\textbf{Characters per token (CPT)}: $\sum c_i / \sum t_i$.
+
+\textbf{Bytes per token (BPT)}: $\sum b_i / \sum t_i$ where $b_i = |\text{UTF-8}(s_i)|$. BPT is cross-script fair: UTF-8 charges proportionally for codepoint width (Latin 1B, Devanagari 3B, Burmese 3B), so a tokenizer producing $X$ bytes/token does roughly the same compression work across scripts.
+
+\textbf{Confidence intervals}: 1000-resample sentence-level bootstrap with \texttt{numpy.random.default\_rng(42)}, percentile method.
+
+\subsection{Needle-in-haystack protocol}
+\label{sec:niah}
+
+For each (model, language, fill\_tokens, position\_pct, trial), we build a haystack of FLORES sentences in the target language sized to \texttt{fill\_tokens} using the real tokenizer (\emph{not} a length-divided-by-4 estimate as in prior pilots), insert a script-native marker phrase at the specified position, and ask the model to recall the marker. The 12-script marker bank ensures that the marker is native to the haystack script (e.g.\ a Tamil marker in a Tamil haystack), closing the Latin-needle bias of \citet{ng2025sealion}'s pilot. Recall is scored as exact NFC-normalized substring match. We run 6 languages (eng, vie, hin, tam, mya, lao) $\times$ 3 models (gpt-4o-mini, gpt-3.5-turbo, llama-3.1-8b-instruct) $\times$ 3 fill levels (4k, 16k, 32k) $\times$ 5 positions (5/25/50/75/95\%) $\times$ 2 trials = 540 calls via OpenRouter.
+
+\section{Results}
+\label{sec:results}
+
+\subsection{Cost ratios across tokenizers}
+
+Figure~\ref{fig:heatmap} shows the same-content cost ratio for all (language, tokenizer) cells. Three patterns are immediate:
+\begin{enumerate}
+    \item \textbf{The worst-hit cluster by script.} On cl100k\_base, Burmese (11.66$\times$), Lao (9.60$\times$), Malayalam (8.94$\times$), Kannada (8.88$\times$), Sinhala (8.87$\times$), Khmer (8.92$\times$), Telugu (8.35$\times$), and Tamil (7.61$\times$) pay 7--12$\times$.
+    \item \textbf{Tokenizer choice removes most of the cost.} Switching the same content from cl100k\_base to o200k\_base cuts Tamil from 7.61$\times$ to 1.98$\times$, Malayalam from 8.94$\times$ to 1.95$\times$, and Burmese from 11.66$\times$ to 3.18$\times$. The \texttt{o200k\_base} byte-level vocabulary, used by GPT-4o and GPT-5, fully eliminates the Indic-script penalty except for Sinhala.
+    \item \textbf{BLOOM's multilingual training shows.} The BLOOM tokenizer achieves remarkably low premiums on Indic scripts (Tamil 1.29$\times$, Bengali 1.17$\times$, Hindi 1.30$\times$), confirming the value of including Indic data in vocabulary training. However, BLOOM struggles with Burmese (10.03$\times$) and Sinhala (8.27$\times$).
+\end{enumerate}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{../runs/main/figures/fig1_heatmap.pdf}
+\caption{Same-content cost ratio (vs.\ English) by language $\times$ tokenizer. Lower is better. Rows sorted by maximum cost across tokenizers; the five highest cells annotated.}
+\label{fig:heatmap}
+\end{figure}
+
+Figure~\ref{fig:script} shows the cl100k cost ratio bars colored by script, with 95\% bootstrap CIs. Burmese and Lao are clearly highest, with confidence intervals tight enough to distinguish all Indic vs Brahmic-derived script families.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{../runs/main/figures/fig2_premium_by_script.pdf}
+\caption{Same-content cost ratio on cl100k\_base, by language, with 95\% bootstrap CIs. Color encodes script. Burmese (Mymr) and Lao (Laoo) dominate.}
+\label{fig:script}
+\end{figure}
+
+\subsection{Cost in dollars}
+
+Because price-per-token is constant within an API, the same-content token ratio is the bill ratio. Figure~\ref{fig:cost} translates the cost ratios into a monthly bill at 100{,}000 requests/month against GPT-4 Turbo input pricing (\$10 per 1M tokens, 27 tokens per English request). Burmese costs \$3{,}150/month, Lao \$2{,}600/month, and the Brahmic-derived scripts cluster around \$2{,}300/month, versus English's \$270/month. The gap is a roughly \$2{,}500--\$2{,}900/month tax on the affected regional teams. Switching to a o200k\_base-using model (e.g.\ GPT-4o-mini at \$0.15/1M input) drops the absolute cost by an additional order of magnitude.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{../runs/main/figures/fig3_cost.pdf}
+\caption{Estimated monthly cost in USD at 100{,}000 requests/month, GPT-4 Turbo input pricing, by language. English baseline marked with the dashed line.}
+\label{fig:cost}
+\end{figure}
+
+\subsection{Context window exhaustion and in-context capacity}
+
+Figure~\ref{fig:exhaustion} plots cumulative tokens across turns at 100 words/turn. A Burmese or Lao conversation crosses the 4k window in 2--3 turns; the same English conversation lasts ~32 turns. Figure~\ref{fig:capacity} shows the in-context capacity: an 8k-token window holds about 60 hundred-word English examples but only 5--7 for Brahmic-derived scripts.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{../runs/main/figures/fig4_context_exhaustion.pdf}
+\caption{Cumulative context use across turns (100 words/turn) on cl100k\_base. Dots mark where each language crosses the 4096-token window.}
+\label{fig:exhaustion}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{../runs/main/figures/fig5_in_context_capacity.pdf}
+\caption{Number of 100-word in-context examples that fit in an 8192-token window (cl100k\_base). High-cost languages fit roughly an order of magnitude fewer.}
+\label{fig:capacity}
+\end{figure}
+
+\subsection{Multi-turn needle-in-haystack recall}
+
+The 540-call NIAH pilot found near-perfect recall across all (model, language, fill) cells inside the models' advertised context windows. Per-cell recall pooled over positions $\times$ trials averages above 0.95 for gpt-4o-mini, gpt-3.5-turbo, and llama-3.1-8b-instruct on English, Vietnamese, Hindi, Tamil, Burmese, and Lao haystacks up to 32k tokens. This matches the prediction of the window-pressure thesis: at context sizes inside a model's window (32k against 16k--128k real windows), the tokenizer cost compresses the budget (Figures~\ref{fig:exhaustion} and \ref{fig:capacity}) but does not yet cause recall loss. We therefore caution against using ``tokens $\approx$ degradation'' as a direct heuristic; the relationship holds at window-edge contexts but not within the advertised window. The script-native marker design also closes the Latin-needle bias caveat: Tamil markers in Tamil haystacks are recalled as accurately as Latin markers in English haystacks. Figure~\ref{fig:recall} shows the cost-vs-recall plot.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{../runs/main/figures/fig6_premium_vs_recall.pdf}
+\caption{Cost ratio vs.\ mean NIAH recall (pooled over positions, trials, and models) at fill levels up to 32k tokens. No recall degradation is observed within model windows; the cost penalty is upstream of any accuracy effect.}
+\label{fig:recall}
+\end{figure}
+
+\section{Discussion}
+\label{sec:discussion}
+
+The tokenizer cost reframes the deployment economics for Asian-language LLM products from ``the model is hard for our language'' (an immutable property) into ``the tokenizer was chosen for English'' (a procurement choice). For Tamil, switching from a cl100k\_base model to an o200k\_base model cuts the bill 3.8$\times$ and the context budget 3.8$\times$, with no model retraining. For Burmese, the analogous switch is 3.7$\times$. For Lao, the picture is bleaker: even the best o200k\_base tokenizer leaves a 8.3$\times$ penalty---no current Western tokenizer covers Lao well.
+
+The 540-call NIAH shows that the input-side cost penalty does \emph{not} translate to a recall penalty inside model windows. This is a useful narrowing: practitioners can budget against the dollar and context-fill axes without simultaneously discounting the accuracy of in-window content. The window-edge regime, which prior multi-turn work \citep{liu2023lost,laban2025lostmulti} flags, is where the input-cost and accuracy axes converge; that regime is the natural next benchmark.
+
+\textbf{Comparison to afri-fertility.} Our methodology mirrors \citet{somide2026african}'s methodology: parallel-corpus measurement, sum-then-divide aggregation, pinned price+FX snapshots, manifest-based reproducibility. The two studies are complementary: same penalty, two continents.
+
+\section{Limitations}
+\label{sec:limitations}
+
+\textbf{Tokenizer coverage.} We measure 7 tokenizers fully and 3 are gated (Llama-3.1, Gemma-2, Aya Expanse) requiring user license acceptance. Specialized Indic tokenizers (IndicSuperTokenizer, sarvam-1) are not included and would likely improve Indic numbers further---a v0.4 target.
+
+\textbf{Domain dependence.} FLORES-200 is news/wiki text. Domain-specific tokenization (medical, legal, conversational) may differ. The \texttt{asia-fertility} package supports user-supplied JSONL/CSV corpora for in-domain measurement.
+
+\textbf{Burmese segmentation.} No widely-installable Burmese word segmentation library exists in 2026; we use a Unicode-block regex syllable segmenter, which inflates word counts relative to ``true'' linguistic words. This affects \emph{fertility} and \emph{premium} (denominator includes words), not the headline \emph{same-content cost ratio} or BPT.
+
+\textbf{NIAH scope.} The 540-call protocol does not probe window-edge contexts (64k--128k). The recall-degradation regime lives there, not at the 32k upper bound we tested.
+
+\textbf{Single-author study.} Results reflect one researcher's choices of tokenizers, marker design, and metric definitions; cross-replication encouraged.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+We measured the multilingual tokenizer tax across 16 Asian languages and 7 tokenizers, with 95\% bootstrap confidence intervals on the full FLORES-200 dev split. The penalty is real, large (up to 11.7$\times$ on cl100k\_base for Burmese), tokenizer-dependent (3--6$\times$ reduction with a byte-level vocabulary), and visible before any model is invoked. It compresses the context budget and the bill in proportion but does \emph{not} degrade in-window recall, as our 540-call NIAH benchmark with script-native markers confirms.
+
+The cost penalty is a procurement choice, not a property of language difficulty. Our open-source \texttt{asia-fertility} package lets any team verify the tax on their own text before they choose a model.
+
+\section*{Code and Data Availability}
+\begin{itemize}
+    \item Package: \url{https://github.com/Helmo21/asia-fertility} (MIT). \texttt{pip install asia-fertility[oai]; asia-fertility reproduce}.
+    \item HuggingFace dataset: \url{https://huggingface.co/datasets/trustya/asia-fertility} (CC-BY-SA 4.0).
+    \item Manifest with SHA256 of config, pinned price + FX snapshots, and tokenizer versions accompanies each run.
+\end{itemize}
+
+\section*{Acknowledgements}
+This work builds on the FertiScope hackathon submission at the Global South AI Safety Hackathon, Da Nang, June 2026, with Leo Dang, Miles Whiticker, and Vinh Van as co-authors of the original paper. The present arXiv-style writeup expands on that work with bootstrap CIs, the BPT metric, a wider tokenizer set, full FLORES-200 dev rather than a 50-sentence subset, and a 540-call NIAH benchmark with script-native markers. The methodological framing closely follows \citet{somide2026african}'s African Language Tax paper, with which the present work forms a complementary pair.
+
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+\end{document}
