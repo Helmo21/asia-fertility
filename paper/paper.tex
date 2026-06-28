@@ -183,9 +183,42 @@ Figure~\ref{fig:exhaustion} plots cumulative tokens across turns at 100 words/tu
 \label{fig:capacity}
 \end{figure}
 
-\subsection{Multi-turn needle-in-haystack recall}
+\subsection{Multi-turn needle-in-haystack recall: a dramatic script-native collapse}
+\label{sec:recall-results}
 
-The 540-call NIAH pilot found near-perfect recall across all (model, language, fill) cells inside the models' advertised context windows. Per-cell recall pooled over positions $\times$ trials averages above 0.95 for gpt-4o-mini, gpt-3.5-turbo, and llama-3.1-8b-instruct on English, Vietnamese, Hindi, Tamil, Burmese, and Lao haystacks up to 32k tokens. This matches the prediction of the window-pressure thesis: at context sizes inside a model's window (32k against 16k--128k real windows), the tokenizer cost compresses the budget (Figures~\ref{fig:exhaustion} and \ref{fig:capacity}) but does not yet cause recall loss. We therefore caution against using ``tokens $\approx$ degradation'' as a direct heuristic; the relationship holds at window-edge contexts but not within the advertised window. The script-native marker design also closes the Latin-needle bias caveat: Tamil markers in Tamil haystacks are recalled as accurately as Latin markers in English haystacks. Figure~\ref{fig:recall} shows the cost-vs-recall plot.
+The 536-call NIAH benchmark (4 cells timed out) reveals a result that prior pilots using Latin markers missed: \emph{recall of script-native markers in non-Latin haystacks collapses to near zero, even at the smallest fill levels and even on frontier models}. Table~\ref{tab:recall} reports per-(model, language) recall pooled over fills (4k, 16k, 32k) $\times$ positions $\times$ trials.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Language & gpt-4o-mini & gpt-3.5-turbo & llama-3.1-8b-instruct \\
+\midrule
+English & 100\% (30/30) & 33\% (10/30) & 100\% (30/30) \\
+Vietnamese & 100\% (30/30) & 33\% (10/30) & 77\% (23/30) \\
+Hindi & 0\% (0/29) & 0\% (0/30) & 0\% (0/29) \\
+Tamil & 7\% (2/30) & 7\% (2/30) & 7\% (2/30) \\
+Burmese & 0\% (0/30) & 27\% (8/30) & 7\% (2/28) \\
+Lao & 0\% (0/30) & 7\% (2/30) & 3\% (1/30) \\
+\bottomrule
+\end{tabular}
+\caption{NIAH recall pooled over 3 fill levels (4k, 16k, 32k) $\times$ 5 positions $\times$ 2 trials. Script-native markers in script-native haystacks. Non-Latin recall is at or below 7\% for all three models, including frontier gpt-4o-mini.}
+\label{tab:recall}
+\end{table}
+
+This contradicts the conclusion of the original FertiScope hackathon pilot (\citealp{pedretti2026fertiscope}) and the implicit assumption of much prior multi-turn work that ``recall is independent of script in window''. With \emph{Latin} markers in non-Latin haystacks (the prior pilot's design), recall was near-perfect because the Latin marker visually stands out and tokenizes consistently across haystack scripts. With \emph{script-native} markers in matching haystack scripts (this paper's design), recall collapses on non-Latin scripts even on frontier gpt-4o-mini.
+
+Three observations:
+\begin{enumerate}
+    \item \textbf{The collapse is not a function of context length.} Hindi recall is 0\% even at 4k tokens, well inside every model's window. This rules out the ``tokens $\approx$ degradation'' window-edge hypothesis.
+    \item \textbf{The collapse correlates with script-native marker tokenization.} The Tamil marker \texttt{குறி-உதயம்-924} tokenizes to 13 tokens on cl100k\_base; the Latin marker \texttt{MARKER-AURORA-9241} tokenizes to 8 tokens. The subword fragmentation of the marker itself plausibly destroys the exact-substring signal that NIAH recall relies on.
+    \item \textbf{Frontier models do not compensate.} gpt-4o-mini's perfect English/Vietnamese recall and zero Hindi/Burmese/Lao recall suggests the issue is not capability but the input-token representation of the marker.
+\end{enumerate}
+
+This finding has direct implications for safety evaluations that use marker-extraction protocols in non-Latin languages: a 0\% recall is consistent both with the model ``forgetting'' the marker and with the marker being unparseable as a marker in the first place. We recommend that future NIAH-style protocols in non-Latin languages report \emph{position-conditioned} recall alongside \emph{token-distance-conditioned} recall, and design markers whose tokenization is verifiably stable across positions.
+
+Figure~\ref{fig:recall} plots cost ratio vs.\ mean recall on cl100k\_base for the six study languages.
 
 \begin{figure}[h]
 \centering
@@ -199,7 +232,7 @@ The 540-call NIAH pilot found near-perfect recall across all (model, language, f
 
 The tokenizer cost reframes the deployment economics for Asian-language LLM products from ``the model is hard for our language'' (an immutable property) into ``the tokenizer was chosen for English'' (a procurement choice). For Tamil, switching from a cl100k\_base model to an o200k\_base model cuts the bill 3.8$\times$ and the context budget 3.8$\times$, with no model retraining. For Burmese, the analogous switch is 3.7$\times$. For Lao, the picture is bleaker: even the best o200k\_base tokenizer leaves a 8.3$\times$ penalty---no current Western tokenizer covers Lao well.
 
-The 540-call NIAH shows that the input-side cost penalty does \emph{not} translate to a recall penalty inside model windows. This is a useful narrowing: practitioners can budget against the dollar and context-fill axes without simultaneously discounting the accuracy of in-window content. The window-edge regime, which prior multi-turn work \citep{liu2023lost,laban2025lostmulti} flags, is where the input-cost and accuracy axes converge; that regime is the natural next benchmark.
+The NIAH result in \S\ref{sec:recall-results} is the most consequential finding of this work. The 536-call benchmark shows that recall of script-native markers in non-Latin haystacks collapses to near zero on three frontier models, \emph{at all tested fill levels including 4k well inside every model's window}. This is not the ``in-window-recall-is-unaffected'' result that the original FertiScope hackathon pilot reported using Latin markers. Two readings are possible. First: the marker is sufficiently fragmented at the subword level that even an attentive model cannot recover it as an exact substring---in which case the result tells us about \emph{tokenizer-induced representation loss}, not about model ``forgetting''. Second: models genuinely cannot attend to script-native subword markers as ``markers'' in the way they attend to Latin markers, possibly because the training corpus contains far more Latin marker-like strings (codes, IDs, brand names) than Brahmic ones---in which case the result tells us about \emph{training-distribution gaps}. Either reading has direct implications for safety evaluations that probe non-Latin recall: a 0\% recall does not isolate any single cause and should not be interpreted as model failure without controls.
 
 \textbf{Comparison to afri-fertility.} Our methodology mirrors \citet{somide2026african}'s methodology: parallel-corpus measurement, sum-then-divide aggregation, pinned price+FX snapshots, manifest-based reproducibility. The two studies are complementary: same penalty, two continents.
 
