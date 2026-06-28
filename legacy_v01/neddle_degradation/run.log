@@ -1,0 +1,134 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[warn] FLORES load failed (Dataset scripts are no longer supported, but found flores200.py); using synthetic corpus.
+Chunk 0: 75 tokens | Total: 75 | Utilization: 0.92%
+Chunk 1: 75 tokens | Total: 150 | Utilization: 1.83%
+Chunk 2: 75 tokens | Total: 225 | Utilization: 2.75%
+Chunk 3: 75 tokens | Total: 300 | Utilization: 3.66%
+Chunk 4: 75 tokens | Total: 375 | Utilization: 4.58%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 5: 75 tokens | Total: 468 | Utilization: 5.71%
+Chunk 6: 75 tokens | Total: 543 | Utilization: 6.63%
+Chunk 7: 75 tokens | Total: 618 | Utilization: 7.54%
+Chunk 8: 75 tokens | Total: 693 | Utilization: 8.46%
+Chunk 9: 75 tokens | Total: 768 | Utilization: 9.38%
+Chunk 10: 75 tokens | Total: 843 | Utilization: 10.29%
+Chunk 11: 75 tokens | Total: 918 | Utilization: 11.21%
+Chunk 12: 75 tokens | Total: 993 | Utilization: 12.12%
+Chunk 13: 75 tokens | Total: 1068 | Utilization: 13.04%
+Chunk 14: 75 tokens | Total: 1143 | Utilization: 13.95%
+Chunk 15: 75 tokens | Total: 1218 | Utilization: 14.87%
+Chunk 16: 75 tokens | Total: 1293 | Utilization: 15.78%
+Chunk 17: 75 tokens | Total: 1368 | Utilization: 16.70%
+Chunk 18: 75 tokens | Total: 1443 | Utilization: 17.61%
+Chunk 19: 75 tokens | Total: 1518 | Utilization: 18.53%
+Chunk 20: 75 tokens | Total: 1593 | Utilization: 19.45%
+Chunk 21: 75 tokens | Total: 1668 | Utilization: 20.36%
+Chunk 22: 75 tokens | Total: 1743 | Utilization: 21.28%
+Chunk 23: 75 tokens | Total: 1818 | Utilization: 22.19%
+Chunk 24: 75 tokens | Total: 1893 | Utilization: 23.11%
+Chunk 25: 75 tokens | Total: 1968 | Utilization: 24.02%
+Chunk 26: 75 tokens | Total: 2043 | Utilization: 24.94%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 27: 75 tokens | Total: 2138 | Utilization: 26.10%
+Chunk 28: 75 tokens | Total: 2213 | Utilization: 27.01%
+Chunk 29: 75 tokens | Total: 2288 | Utilization: 27.93%
+Chunk 30: 75 tokens | Total: 2363 | Utilization: 28.85%
+Chunk 31: 75 tokens | Total: 2438 | Utilization: 29.76%
+Chunk 32: 75 tokens | Total: 2513 | Utilization: 30.68%
+Chunk 33: 75 tokens | Total: 2588 | Utilization: 31.59%
+Chunk 34: 75 tokens | Total: 2663 | Utilization: 32.51%
+Chunk 35: 75 tokens | Total: 2738 | Utilization: 33.42%
+Chunk 36: 75 tokens | Total: 2813 | Utilization: 34.34%
+Chunk 37: 75 tokens | Total: 2888 | Utilization: 35.25%
+Chunk 38: 75 tokens | Total: 2963 | Utilization: 36.17%
+Chunk 39: 75 tokens | Total: 3038 | Utilization: 37.08%
+Chunk 40: 75 tokens | Total: 3113 | Utilization: 38.00%
+Chunk 41: 75 tokens | Total: 3188 | Utilization: 38.92%
+Chunk 42: 75 tokens | Total: 3263 | Utilization: 39.83%
+Chunk 43: 75 tokens | Total: 3338 | Utilization: 40.75%
+Chunk 44: 75 tokens | Total: 3413 | Utilization: 41.66%
+Chunk 45: 75 tokens | Total: 3488 | Utilization: 42.58%
+Chunk 46: 75 tokens | Total: 3563 | Utilization: 43.49%
+Chunk 47: 75 tokens | Total: 3638 | Utilization: 44.41%
+Chunk 48: 75 tokens | Total: 3713 | Utilization: 45.32%
+Chunk 49: 75 tokens | Total: 3788 | Utilization: 46.24%
+Chunk 50: 75 tokens | Total: 3863 | Utilization: 47.16%
+Chunk 51: 75 tokens | Total: 3938 | Utilization: 48.07%
+Chunk 52: 75 tokens | Total: 4013 | Utilization: 48.99%
+Chunk 53: 75 tokens | Total: 4088 | Utilization: 49.90%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 54: 75 tokens | Total: 4182 | Utilization: 51.05%
+Chunk 55: 75 tokens | Total: 4257 | Utilization: 51.97%
+Chunk 56: 75 tokens | Total: 4332 | Utilization: 52.88%
+Chunk 57: 75 tokens | Total: 4407 | Utilization: 53.80%
+Chunk 58: 75 tokens | Total: 4482 | Utilization: 54.71%
+Chunk 59: 75 tokens | Total: 4557 | Utilization: 55.63%
+Chunk 60: 75 tokens | Total: 4632 | Utilization: 56.54%
+Chunk 61: 75 tokens | Total: 4707 | Utilization: 57.46%
+Chunk 62: 75 tokens | Total: 4782 | Utilization: 58.37%
+Chunk 63: 75 tokens | Total: 4857 | Utilization: 59.29%
+Chunk 64: 75 tokens | Total: 4932 | Utilization: 60.21%
+Chunk 65: 75 tokens | Total: 5007 | Utilization: 61.12%
+Chunk 66: 75 tokens | Total: 5082 | Utilization: 62.04%
+Chunk 67: 75 tokens | Total: 5157 | Utilization: 62.95%
+Chunk 68: 75 tokens | Total: 5232 | Utilization: 63.87%
+Chunk 69: 75 tokens | Total: 5307 | Utilization: 64.78%
+Chunk 70: 75 tokens | Total: 5382 | Utilization: 65.70%
+Chunk 71: 75 tokens | Total: 5457 | Utilization: 66.61%
+Chunk 72: 75 tokens | Total: 5532 | Utilization: 67.53%
+Chunk 73: 75 tokens | Total: 5607 | Utilization: 68.44%
+Chunk 74: 75 tokens | Total: 5682 | Utilization: 69.36%
+Chunk 75: 75 tokens | Total: 5757 | Utilization: 70.28%
+Chunk 76: 75 tokens | Total: 5832 | Utilization: 71.19%
+Chunk 77: 75 tokens | Total: 5907 | Utilization: 72.11%
+Chunk 78: 75 tokens | Total: 5982 | Utilization: 73.02%
+Chunk 79: 75 tokens | Total: 6057 | Utilization: 73.94%
+Chunk 80: 75 tokens | Total: 6132 | Utilization: 74.85%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 81: 75 tokens | Total: 6228 | Utilization: 76.03%
+Chunk 82: 75 tokens | Total: 6303 | Utilization: 76.94%
+Chunk 83: 75 tokens | Total: 6378 | Utilization: 77.86%
+Chunk 84: 75 tokens | Total: 6453 | Utilization: 78.77%
+Chunk 85: 75 tokens | Total: 6528 | Utilization: 79.69%
+Chunk 86: 75 tokens | Total: 6603 | Utilization: 80.60%
+Chunk 87: 75 tokens | Total: 6678 | Utilization: 81.52%
+Chunk 88: 75 tokens | Total: 6753 | Utilization: 82.43%
+Chunk 89: 75 tokens | Total: 6828 | Utilization: 83.35%
+Chunk 90: 75 tokens | Total: 6903 | Utilization: 84.27%
+Chunk 91: 75 tokens | Total: 6978 | Utilization: 85.18%
+Chunk 92: 75 tokens | Total: 7053 | Utilization: 86.10%
+Chunk 93: 75 tokens | Total: 7128 | Utilization: 87.01%
+Chunk 94: 75 tokens | Total: 7203 | Utilization: 87.93%
+Chunk 95: 75 tokens | Total: 7278 | Utilization: 88.84%
+Chunk 96: 75 tokens | Total: 7353 | Utilization: 89.76%
+Chunk 97: 75 tokens | Total: 7428 | Utilization: 90.67%
+Chunk 98: 75 tokens | Total: 7503 | Utilization: 91.59%
+Chunk 99: 75 tokens | Total: 7578 | Utilization: 92.50%
+Chunk 100: 76 tokens | Total: 7654 | Utilization: 93.43%
+Chunk 101: 76 tokens | Total: 7730 | Utilization: 94.36%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 102: 76 tokens | Total: 7826 | Utilization: 95.53%
+Chunk 103: 76 tokens | Total: 7902 | Utilization: 96.46%
+Chunk 104: 76 tokens | Total: 7978 | Utilization: 97.39%
+Chunk 105: 76 tokens | Total: 8054 | Utilization: 98.32%
+Chunk 106: 76 tokens | Total: 8130 | Utilization: 99.24%
+Chunk 107: 76 tokens | Total: 8206 | Utilization: 100.17%
+Context window at 100% — running recall test...
+
+=== RECALL RESULTS ===
+[RECALLED] MARKER_FIVE_PERCENT_AURORA (injected at 5.0%, position=468 tokens)
+[RECALLED] MARKER_TWENTY_FIVE_PERCENT_HORIZON (injected at 25.0%, position=2138 tokens)
+[LOST] MARKER_FIFTY_PERCENT_ZENITH (injected at 50.0%, position=4182 tokens)
+[RECALLED] MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE (injected at 75.0%, position=6228 tokens)
+[RECALLED] MARKER_NINETY_FIVE_PERCENT_APEX (injected at 95.0%, position=7826 tokens)
+
+=== MODEL RECALL RESPONSE ===
+I have encountered the following special marker phrases:
+
+1. `MARKER_FIVE_PERCENT_AURORA`
+2. `MARKER_TWENTY_FIVE_PERCENT_HORIZON`
+3. `MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE`
+4. `MARKER_NINETY_FIVE_PERCENT_APEX`
+
+These phrases were used to mark significant milestones in the analysis of the text chunks.
+Results saved to llama31_8b_degradation_results.json

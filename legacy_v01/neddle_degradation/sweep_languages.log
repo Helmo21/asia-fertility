@@ -1,0 +1,497 @@
+
+======================================================================
+=== LANGUAGE Thai (tha_Thai) ===
+======================================================================
+[Thai] sentences=2009 tokens/char=0.481 (sample=1262 tokens)
+
+[Thai @ 4096] feeding up to 67 chunks (tpc=0.481)
+Chunk 0: 132 tokens | Total: 132 | Utilization: 3.22%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 50: 59 tokens | Total: 3229 | Utilization: 78.83%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 62: 102 tokens | Total: 4189 | Utilization: 102.27%
+[Thai @ 4096] running recall...
+
+[Thai @ 8192] feeding up to 129 chunks (tpc=0.481)
+Chunk 0: 132 tokens | Total: 132 | Utilization: 1.61%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 50: 59 tokens | Total: 3153 | Utilization: 38.49%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 100: 56 tokens | Total: 6611 | Utilization: 80.70%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 123: 72 tokens | Total: 8192 | Utilization: 100.00%
+[Thai @ 8192] running recall...
+
+[Thai @ 16384] feeding up to 289 chunks (tpc=0.481)
+Chunk 0: 132 tokens | Total: 132 | Utilization: 0.81%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 50: 59 tokens | Total: 3114 | Utilization: 19.01%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 100: 56 tokens | Total: 6535 | Utilization: 39.89%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 150: 45 tokens | Total: 9782 | Utilization: 59.70%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 200: 63 tokens | Total: 12408 | Utilization: 75.73%
+Chunk 250: 31 tokens | Total: 14839 | Utilization: 90.57%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 277: 93 tokens | Total: 16452 | Utilization: 100.42%
+[Thai @ 16384] running recall...
+
+[Thai @ 32768] feeding up to 588 chunks (tpc=0.481)
+Chunk 0: 132 tokens | Total: 132 | Utilization: 0.40%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 50: 59 tokens | Total: 3114 | Utilization: 9.50%
+Chunk 100: 56 tokens | Total: 6496 | Utilization: 19.82%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 150: 45 tokens | Total: 9746 | Utilization: 29.74%
+Chunk 200: 63 tokens | Total: 12332 | Utilization: 37.63%
+Chunk 250: 31 tokens | Total: 14763 | Utilization: 45.05%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 300: 67 tokens | Total: 17646 | Utilization: 53.85%
+Chunk 350: 63 tokens | Total: 20040 | Utilization: 61.16%
+Chunk 400: 39 tokens | Total: 22803 | Utilization: 69.59%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 450: 78 tokens | Total: 25748 | Utilization: 78.58%
+Chunk 500: 56 tokens | Total: 28917 | Utilization: 88.25%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 550: 53 tokens | Total: 31917 | Utilization: 97.40%
+Chunk 565: 85 tokens | Total: 32775 | Utilization: 100.02%
+[Thai @ 32768] running recall...
+
+[Thai @ 65536] feeding up to 1159 chunks (tpc=0.481)
+Chunk 0: 132 tokens | Total: 132 | Utilization: 0.20%
+Chunk 50: 59 tokens | Total: 3078 | Utilization: 4.70%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 100: 56 tokens | Total: 6496 | Utilization: 9.91%
+Chunk 150: 45 tokens | Total: 9707 | Utilization: 14.81%
+Chunk 200: 63 tokens | Total: 12293 | Utilization: 18.76%
+Chunk 250: 31 tokens | Total: 14724 | Utilization: 22.47%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 300: 67 tokens | Total: 17610 | Utilization: 26.87%
+Chunk 350: 63 tokens | Total: 20004 | Utilization: 30.52%
+Chunk 400: 39 tokens | Total: 22767 | Utilization: 34.74%
+Chunk 450: 78 tokens | Total: 25672 | Utilization: 39.17%
+Chunk 500: 56 tokens | Total: 28841 | Utilization: 44.01%
+Chunk 550: 53 tokens | Total: 31803 | Utilization: 48.53%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 600: 40 tokens | Total: 34467 | Utilization: 52.59%
+Chunk 650: 84 tokens | Total: 37256 | Utilization: 56.85%
+Chunk 700: 43 tokens | Total: 40127 | Utilization: 61.23%
+Chunk 750: 36 tokens | Total: 42907 | Utilization: 65.47%
+Chunk 800: 50 tokens | Total: 45678 | Utilization: 69.70%
+Chunk 850: 51 tokens | Total: 48736 | Utilization: 74.37%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 900: 52 tokens | Total: 51535 | Utilization: 78.64%
+Chunk 950: 59 tokens | Total: 54733 | Utilization: 83.52%
+Chunk 1000: 151 tokens | Total: 57862 | Utilization: 88.29%
+Chunk 1050: 68 tokens | Total: 61221 | Utilization: 93.42%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 1100: 26 tokens | Total: 64359 | Utilization: 98.20%
+Chunk 1122: 59 tokens | Total: 65562 | Utilization: 100.04%
+[Thai @ 65536] running recall...
+
+[Thai @ 131072] feeding up to 2309 chunks (tpc=0.481)
+Chunk 0: 132 tokens | Total: 132 | Utilization: 0.10%
+Chunk 50: 59 tokens | Total: 3078 | Utilization: 2.35%
+Chunk 100: 56 tokens | Total: 6460 | Utilization: 4.93%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 150: 45 tokens | Total: 9707 | Utilization: 7.41%
+Chunk 200: 63 tokens | Total: 12293 | Utilization: 9.38%
+Chunk 250: 31 tokens | Total: 14724 | Utilization: 11.23%
+Chunk 300: 67 tokens | Total: 17571 | Utilization: 13.41%
+Chunk 350: 63 tokens | Total: 19965 | Utilization: 15.23%
+Chunk 400: 39 tokens | Total: 22728 | Utilization: 17.34%
+Chunk 450: 78 tokens | Total: 25633 | Utilization: 19.56%
+Chunk 500: 56 tokens | Total: 28802 | Utilization: 21.97%
+Chunk 550: 53 tokens | Total: 31764 | Utilization: 24.23%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 600: 40 tokens | Total: 34431 | Utilization: 26.27%
+Chunk 650: 84 tokens | Total: 37220 | Utilization: 28.40%
+Chunk 700: 43 tokens | Total: 40091 | Utilization: 30.59%
+Chunk 750: 36 tokens | Total: 42871 | Utilization: 32.71%
+Chunk 800: 50 tokens | Total: 45642 | Utilization: 34.82%
+Chunk 850: 51 tokens | Total: 48700 | Utilization: 37.16%
+Chunk 900: 52 tokens | Total: 51459 | Utilization: 39.26%
+Chunk 950: 59 tokens | Total: 54657 | Utilization: 41.70%
+Chunk 1000: 151 tokens | Total: 57786 | Utilization: 44.09%
+Chunk 1050: 68 tokens | Total: 61145 | Utilization: 46.65%
+Chunk 1100: 26 tokens | Total: 64245 | Utilization: 49.02%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 1150: 51 tokens | Total: 67088 | Utilization: 51.18%
+Chunk 1200: 97 tokens | Total: 70340 | Utilization: 53.67%
+Chunk 1250: 32 tokens | Total: 72951 | Utilization: 55.66%
+Chunk 1300: 63 tokens | Total: 75823 | Utilization: 57.85%
+Chunk 1350: 41 tokens | Total: 78687 | Utilization: 60.03%
+Chunk 1400: 77 tokens | Total: 81513 | Utilization: 62.19%
+Chunk 1450: 71 tokens | Total: 84679 | Utilization: 64.60%
+Chunk 1500: 119 tokens | Total: 88051 | Utilization: 67.18%
+Chunk 1550: 50 tokens | Total: 91256 | Utilization: 69.62%
+Chunk 1600: 74 tokens | Total: 94128 | Utilization: 71.81%
+Chunk 1650: 45 tokens | Total: 96671 | Utilization: 73.75%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 1700: 52 tokens | Total: 99838 | Utilization: 76.17%
+Chunk 1750: 81 tokens | Total: 102749 | Utilization: 78.39%
+Chunk 1800: 53 tokens | Total: 105594 | Utilization: 80.56%
+Chunk 1850: 51 tokens | Total: 108460 | Utilization: 82.75%
+Chunk 1900: 62 tokens | Total: 111361 | Utilization: 84.96%
+Chunk 1950: 54 tokens | Total: 114384 | Utilization: 87.27%
+Chunk 2000: 62 tokens | Total: 117221 | Utilization: 89.43%
+Chunk 2050: 73 tokens | Total: 120042 | Utilization: 91.58%
+Chunk 2100: 78 tokens | Total: 123585 | Utilization: 94.29%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 2150: 71 tokens | Total: 126917 | Utilization: 96.83%
+Chunk 2200: 50 tokens | Total: 129522 | Utilization: 98.82%
+Chunk 2235: 37 tokens | Total: 131094 | Utilization: 100.02%
+[Thai @ 131072] running recall...
+
+======================================================================
+=== LANGUAGE Tamil (tam_Taml) ===
+======================================================================
+[Tamil] sentences=2009 tokens/char=1.304 (sample=4096 tokens)
+
+[Tamil @ 4096] feeding up to 23 chunks (tpc=1.304)
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 0: 346 tokens | Total: 443 | Utilization: 10.82%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 17: 202 tokens | Total: 4126 | Utilization: 100.73%
+[Tamil @ 4096] running recall...
+
+[Tamil @ 8192] feeding up to 47 chunks (tpc=1.304)
+Chunk 0: 346 tokens | Total: 346 | Utilization: 4.22%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 41: 249 tokens | Total: 8367 | Utilization: 102.14%
+[Tamil @ 8192] running recall...
+
+[Tamil @ 16384] feeding up to 87 chunks (tpc=1.304)
+Chunk 0: 346 tokens | Total: 346 | Utilization: 2.11%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 50: 213 tokens | Total: 10159 | Utilization: 62.01%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 75: 337 tokens | Total: 16696 | Utilization: 101.90%
+[Tamil @ 16384] running recall...
+
+[Tamil @ 32768] feeding up to 178 chunks (tpc=1.304)
+Chunk 0: 346 tokens | Total: 346 | Utilization: 1.06%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 50: 213 tokens | Total: 10060 | Utilization: 30.70%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 100: 247 tokens | Total: 20926 | Utilization: 63.86%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 150: 156 tokens | Total: 31390 | Utilization: 95.79%
+Chunk 159: 281 tokens | Total: 32866 | Utilization: 100.30%
+[Tamil @ 32768] running recall...
+
+[Tamil @ 65536] feeding up to 388 chunks (tpc=1.304)
+Chunk 0: 346 tokens | Total: 346 | Utilization: 0.53%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 50: 213 tokens | Total: 9952 | Utilization: 15.19%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 100: 247 tokens | Total: 20827 | Utilization: 31.78%
+Chunk 150: 156 tokens | Total: 31077 | Utilization: 47.42%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 200: 140 tokens | Total: 39609 | Utilization: 60.44%
+Chunk 250: 106 tokens | Total: 47685 | Utilization: 72.76%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 300: 196 tokens | Total: 56751 | Utilization: 86.60%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 350: 186 tokens | Total: 64555 | Utilization: 98.50%
+Chunk 356: 297 tokens | Total: 65746 | Utilization: 100.32%
+[Tamil @ 65536] running recall...
+
+[Tamil @ 131072] feeding up to 755 chunks (tpc=1.304)
+Chunk 0: 346 tokens | Total: 346 | Utilization: 0.26%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 50: 213 tokens | Total: 9952 | Utilization: 7.59%
+Chunk 100: 247 tokens | Total: 20719 | Utilization: 15.81%
+Chunk 150: 156 tokens | Total: 30969 | Utilization: 23.63%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 200: 140 tokens | Total: 39510 | Utilization: 30.14%
+Chunk 250: 106 tokens | Total: 47586 | Utilization: 36.31%
+Chunk 300: 196 tokens | Total: 56542 | Utilization: 43.14%
+Chunk 350: 186 tokens | Total: 64242 | Utilization: 49.01%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 400: 96 tokens | Total: 73591 | Utilization: 56.15%
+Chunk 450: 256 tokens | Total: 83224 | Utilization: 63.49%
+Chunk 500: 161 tokens | Total: 93480 | Utilization: 71.32%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 550: 209 tokens | Total: 103696 | Utilization: 79.11%
+Chunk 600: 106 tokens | Total: 112656 | Utilization: 85.95%
+Chunk 650: 335 tokens | Total: 122358 | Utilization: 93.35%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 697: 194 tokens | Total: 131096 | Utilization: 100.02%
+[Tamil @ 131072] running recall...
+
+======================================================================
+=== LANGUAGE Hindi (hin_Deva) ===
+======================================================================
+[Hindi] sentences=2009 tokens/char=0.526 (sample=1453 tokens)
+
+[Hindi @ 4096] feeding up to 62 chunks (tpc=0.526)
+Chunk 0: 157 tokens | Total: 157 | Utilization: 3.83%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 50: 58 tokens | Total: 3551 | Utilization: 86.69%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 57: 62 tokens | Total: 4153 | Utilization: 101.39%
+[Hindi @ 4096] running recall...
+
+[Hindi @ 8192] feeding up to 121 chunks (tpc=0.526)
+Chunk 0: 157 tokens | Total: 157 | Utilization: 1.92%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 50: 58 tokens | Total: 3467 | Utilization: 42.32%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 100: 60 tokens | Total: 7257 | Utilization: 88.59%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 112: 91 tokens | Total: 8220 | Utilization: 100.34%
+[Hindi @ 8192] running recall...
+
+[Hindi @ 16384] feeding up to 263 chunks (tpc=0.526)
+Chunk 0: 157 tokens | Total: 157 | Utilization: 0.96%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 50: 58 tokens | Total: 3424 | Utilization: 20.90%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 100: 60 tokens | Total: 7173 | Utilization: 43.78%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 150: 61 tokens | Total: 10803 | Utilization: 65.94%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 200: 70 tokens | Total: 13778 | Utilization: 84.09%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 247: 56 tokens | Total: 16422 | Utilization: 100.23%
+[Hindi @ 16384] running recall...
+
+[Hindi @ 32768] feeding up to 523 chunks (tpc=0.526)
+Chunk 0: 157 tokens | Total: 157 | Utilization: 0.48%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 50: 58 tokens | Total: 3424 | Utilization: 10.45%
+Chunk 100: 60 tokens | Total: 7130 | Utilization: 21.76%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 150: 61 tokens | Total: 10763 | Utilization: 32.85%
+Chunk 200: 70 tokens | Total: 13694 | Utilization: 41.79%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 250: 31 tokens | Total: 16462 | Utilization: 50.24%
+Chunk 300: 74 tokens | Total: 19629 | Utilization: 59.90%
+Chunk 350: 71 tokens | Total: 22344 | Utilization: 68.19%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 400: 31 tokens | Total: 25587 | Utilization: 78.09%
+Chunk 450: 85 tokens | Total: 28851 | Utilization: 88.05%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 500: 57 tokens | Total: 32499 | Utilization: 99.18%
+Chunk 503: 66 tokens | Total: 32773 | Utilization: 100.02%
+[Hindi @ 32768] running recall...
+
+[Hindi @ 65536] feeding up to 1028 chunks (tpc=0.526)
+Chunk 0: 157 tokens | Total: 157 | Utilization: 0.24%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 50: 58 tokens | Total: 3424 | Utilization: 5.22%
+Chunk 100: 60 tokens | Total: 7130 | Utilization: 10.88%
+Chunk 150: 61 tokens | Total: 10720 | Utilization: 16.36%
+Chunk 200: 70 tokens | Total: 13651 | Utilization: 20.83%
+Chunk 250: 31 tokens | Total: 16379 | Utilization: 24.99%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 300: 74 tokens | Total: 19589 | Utilization: 29.89%
+Chunk 350: 71 tokens | Total: 22304 | Utilization: 34.03%
+Chunk 400: 31 tokens | Total: 25503 | Utilization: 38.91%
+Chunk 450: 85 tokens | Total: 28767 | Utilization: 43.89%
+Chunk 500: 57 tokens | Total: 32373 | Utilization: 49.40%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 550: 83 tokens | Total: 35969 | Utilization: 54.88%
+Chunk 600: 43 tokens | Total: 39030 | Utilization: 59.56%
+Chunk 650: 106 tokens | Total: 42337 | Utilization: 64.60%
+Chunk 700: 43 tokens | Total: 45548 | Utilization: 69.50%
+Chunk 750: 52 tokens | Total: 48759 | Utilization: 74.40%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 800: 54 tokens | Total: 52166 | Utilization: 79.60%
+Chunk 850: 76 tokens | Total: 55550 | Utilization: 84.76%
+Chunk 900: 83 tokens | Total: 58705 | Utilization: 89.58%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 950: 72 tokens | Total: 62428 | Utilization: 95.26%
+Chunk 993: 93 tokens | Total: 65538 | Utilization: 100.00%
+[Hindi @ 65536] running recall...
+
+[Hindi @ 131072] feeding up to 2041 chunks (tpc=0.526)
+Chunk 0: 157 tokens | Total: 157 | Utilization: 0.12%
+Chunk 50: 58 tokens | Total: 3385 | Utilization: 2.58%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 100: 60 tokens | Total: 7130 | Utilization: 5.44%
+Chunk 150: 61 tokens | Total: 10720 | Utilization: 8.18%
+Chunk 200: 70 tokens | Total: 13651 | Utilization: 10.41%
+Chunk 250: 31 tokens | Total: 16379 | Utilization: 12.50%
+Chunk 300: 74 tokens | Total: 19546 | Utilization: 14.91%
+Chunk 350: 71 tokens | Total: 22261 | Utilization: 16.98%
+Chunk 400: 31 tokens | Total: 25460 | Utilization: 19.42%
+Chunk 450: 85 tokens | Total: 28724 | Utilization: 21.91%
+Chunk 500: 57 tokens | Total: 32330 | Utilization: 24.67%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 550: 83 tokens | Total: 35929 | Utilization: 27.41%
+Chunk 600: 43 tokens | Total: 38990 | Utilization: 29.75%
+Chunk 650: 106 tokens | Total: 42297 | Utilization: 32.27%
+Chunk 700: 43 tokens | Total: 45508 | Utilization: 34.72%
+Chunk 750: 52 tokens | Total: 48719 | Utilization: 37.17%
+Chunk 800: 54 tokens | Total: 52082 | Utilization: 39.74%
+Chunk 850: 76 tokens | Total: 55466 | Utilization: 42.32%
+Chunk 900: 83 tokens | Total: 58621 | Utilization: 44.72%
+Chunk 950: 72 tokens | Total: 62302 | Utilization: 47.53%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 1000: 157 tokens | Total: 66046 | Utilization: 50.39%
+Chunk 1050: 78 tokens | Total: 69707 | Utilization: 53.18%
+Chunk 1100: 38 tokens | Total: 73233 | Utilization: 55.87%
+Chunk 1150: 74 tokens | Total: 76296 | Utilization: 58.21%
+Chunk 1200: 109 tokens | Total: 79860 | Utilization: 60.93%
+Chunk 1250: 23 tokens | Total: 82832 | Utilization: 63.20%
+Chunk 1300: 62 tokens | Total: 85994 | Utilization: 65.61%
+Chunk 1350: 37 tokens | Total: 89201 | Utilization: 68.05%
+Chunk 1400: 70 tokens | Total: 92504 | Utilization: 70.57%
+Chunk 1450: 91 tokens | Total: 96063 | Utilization: 73.29%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 1500: 133 tokens | Total: 99865 | Utilization: 76.19%
+Chunk 1550: 54 tokens | Total: 103619 | Utilization: 79.06%
+Chunk 1600: 73 tokens | Total: 106935 | Utilization: 81.58%
+Chunk 1650: 44 tokens | Total: 109944 | Utilization: 83.88%
+Chunk 1700: 59 tokens | Total: 113661 | Utilization: 86.72%
+Chunk 1750: 56 tokens | Total: 116841 | Utilization: 89.14%
+Chunk 1800: 56 tokens | Total: 120213 | Utilization: 91.72%
+Chunk 1850: 48 tokens | Total: 123629 | Utilization: 94.32%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 1900: 76 tokens | Total: 126940 | Utilization: 96.85%
+Chunk 1950: 79 tokens | Total: 130431 | Utilization: 99.51%
+Chunk 1960: 64 tokens | Total: 131113 | Utilization: 100.03%
+[Hindi @ 131072] running recall...
+
+======================================================================
+=== LANGUAGE Khmer (khm_Khmr) ===
+======================================================================
+[Khmer] sentences=2009 tokens/char=1.234 (sample=4096 tokens)
+
+[Khmer @ 4096] feeding up to 23 chunks (tpc=1.234)
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 0: 449 tokens | Total: 541 | Utilization: 13.21%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 17: 252 tokens | Total: 4174 | Utilization: 101.90%
+[Khmer @ 4096] running recall...
+
+[Khmer @ 8192] feeding up to 47 chunks (tpc=1.234)
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 0: 449 tokens | Total: 541 | Utilization: 6.60%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 41: 219 tokens | Total: 8324 | Utilization: 101.61%
+[Khmer @ 8192] running recall...
+
+[Khmer @ 16384] feeding up to 82 chunks (tpc=1.234)
+Chunk 0: 449 tokens | Total: 449 | Utilization: 2.74%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 50: 181 tokens | Total: 10160 | Utilization: 62.01%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 73: 497 tokens | Total: 16861 | Utilization: 102.91%
+[Khmer @ 16384] running recall...
+
+[Khmer @ 32768] feeding up to 170 chunks (tpc=1.234)
+Chunk 0: 449 tokens | Total: 449 | Utilization: 1.37%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 50: 181 tokens | Total: 10067 | Utilization: 30.72%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 100: 180 tokens | Total: 21584 | Utilization: 65.87%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 150: 213 tokens | Total: 32352 | Utilization: 98.73%
+Chunk 153: 250 tokens | Total: 33003 | Utilization: 100.72%
+[Khmer @ 32768] running recall...
+
+[Khmer @ 65536] feeding up to 377 chunks (tpc=1.234)
+Chunk 0: 449 tokens | Total: 449 | Utilization: 0.69%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 50: 181 tokens | Total: 9965 | Utilization: 15.21%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 100: 180 tokens | Total: 21491 | Utilization: 32.79%
+Chunk 150: 213 tokens | Total: 32057 | Utilization: 48.92%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 200: 202 tokens | Total: 41015 | Utilization: 62.58%
+Chunk 250: 97 tokens | Total: 49098 | Utilization: 74.92%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 300: 183 tokens | Total: 58572 | Utilization: 89.37%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 342: 249 tokens | Total: 65651 | Utilization: 100.18%
+[Khmer @ 65536] running recall...
+
+[Khmer @ 131072] feeding up to 763 chunks (tpc=1.234)
+Chunk 0: 449 tokens | Total: 449 | Utilization: 0.34%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 50: 181 tokens | Total: 9965 | Utilization: 7.60%
+Chunk 100: 180 tokens | Total: 21389 | Utilization: 16.32%
+Chunk 150: 213 tokens | Total: 31955 | Utilization: 24.38%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 200: 202 tokens | Total: 40922 | Utilization: 31.22%
+Chunk 250: 97 tokens | Total: 49005 | Utilization: 37.39%
+Chunk 300: 183 tokens | Total: 58375 | Utilization: 44.54%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 350: 172 tokens | Total: 66787 | Utilization: 50.95%
+Chunk 400: 103 tokens | Total: 75706 | Utilization: 57.76%
+Chunk 450: 294 tokens | Total: 85191 | Utilization: 65.00%
+Chunk 500: 199 tokens | Total: 95459 | Utilization: 72.83%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 550: 218 tokens | Total: 105069 | Utilization: 80.16%
+Chunk 600: 112 tokens | Total: 112973 | Utilization: 86.19%
+Chunk 650: 307 tokens | Total: 121909 | Utilization: 93.01%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 700: 127 tokens | Total: 130826 | Utilization: 99.81%
+Chunk 702: 207 tokens | Total: 131192 | Utilization: 100.09%
+[Khmer @ 131072] running recall...
+
+======================================================================
+=== MULTI-LANG SUMMARY ===
+======================================================================
+  lang |    win |    tok |   rec_s | 5  25 50 75 95
+  Thai |   4096 |   4189 |    13.1 | N  N  N  N  N
+  Thai |   8192 |   8192 |    28.2 | N  Y  Y  Y  Y
+  Thai |  16384 |  16452 |    52.0 | N  Y  N  Y  Y
+  Thai |  32768 |  32775 |   151.5 | N  Y  Y  N  Y
+  Thai |  65536 |  65562 |   418.1 | N  N  N  N  Y
+  Thai | 131072 | 131094 |  1237.9 | N  N  N  N  Y
+ Tamil |   4096 |   4126 |    16.5 | Y  Y  Y  Y  Y
+ Tamil |   8192 |   8367 |    37.5 | Y  Y  Y  Y  Y
+ Tamil |  16384 |  16696 |    72.9 | N  N  N  N  N
+ Tamil |  32768 |  32866 |   135.7 | Y  Y  Y  N  Y
+ Tamil |  65536 |  65746 |   427.1 | N  Y  Y  N  Y
+ Tamil | 131072 | 131096 |  1061.5 | N  N  Y  N  N
+ Hindi |   4096 |   4153 |    14.8 | N  Y  N  Y  Y
+ Hindi |   8192 |   8220 |    21.0 | N  Y  Y  Y  Y
+ Hindi |  16384 |  16422 |    60.5 | N  Y  N  Y  Y
+ Hindi |  32768 |  32773 |   169.7 | N  Y  Y  N  Y
+ Hindi |  65536 |  65538 |   446.8 | N  N  N  N  N
+ Hindi | 131072 | 131113 |  1082.1 | N  N  N  N  Y
+ Khmer |   4096 |   4174 |    17.2 | Y  Y  Y  Y  Y
+ Khmer |   8192 |   8324 |    22.9 | N  Y  Y  Y  Y
+ Khmer |  16384 |  16861 |    48.4 | N  Y  Y  Y  Y
+ Khmer |  32768 |  33003 |   168.2 | N  Y  Y  N  Y
+ Khmer |  65536 |  65651 |   520.4 | N  Y  Y  N  Y
+ Khmer | 131072 | 131192 |  2560.8 | N  N  N  N  N

@@ -1,0 +1,68 @@
+{
+  "test_config": {
+    "model": "llama3.1:8b",
+    "max_context_tokens": 8192,
+    "thresholds": [
+      0.05,
+      0.25,
+      0.5,
+      0.75,
+      0.95
+    ]
+  },
+  "injection_log": [
+    {
+      "threshold": 0.05,
+      "phrase": "MARKER_FIVE_PERCENT_AURORA",
+      "position_in_context": 429
+    },
+    {
+      "threshold": 0.25,
+      "phrase": "MARKER_TWENTY_FIVE_PERCENT_HORIZON",
+      "position_in_context": 2101
+    },
+    {
+      "threshold": 0.5,
+      "phrase": "MARKER_FIFTY_PERCENT_ZENITH",
+      "position_in_context": 4132
+    },
+    {
+      "threshold": 0.75,
+      "phrase": "MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE",
+      "position_in_context": 6167
+    },
+    {
+      "threshold": 0.95,
+      "phrase": "MARKER_NINETY_FIVE_PERCENT_APEX",
+      "position_in_context": 7817
+    }
+  ],
+  "recall_results": {
+    "MARKER_FIVE_PERCENT_AURORA": {
+      "injected_at_pct": 5.0,
+      "recalled": false,
+      "position_tokens": 429
+    },
+    "MARKER_TWENTY_FIVE_PERCENT_HORIZON": {
+      "injected_at_pct": 25.0,
+      "recalled": false,
+      "position_tokens": 2101
+    },
+    "MARKER_FIFTY_PERCENT_ZENITH": {
+      "injected_at_pct": 50.0,
+      "recalled": false,
+      "position_tokens": 4132
+    },
+    "MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE": {
+      "injected_at_pct": 75.0,
+      "recalled": true,
+      "position_tokens": 6167
+    },
+    "MARKER_NINETY_FIVE_PERCENT_APEX": {
+      "injected_at_pct": 95.0,
+      "recalled": true,
+      "position_tokens": 7817
+    }
+  },
+  "recall_response": "I remember encountering the following special marker phrases:\n\n* `MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE` (Chunk 208)\n* `MARKER_NINETY_FIVE_PERCENT_APEX` (Chunk 247)\n\nThese phrases were used to indicate the progress of my analysis and to provide a sense of completion or milestone reached."
+}

@@ -1,0 +1,264 @@
+[flores] loaded 2009 English sentences (64290 approx tokens)
+
+======================================================================
+=== WINDOW 4096 (4k) ===
+======================================================================
+[window 4096] feeding up to 166 FLORES chunks
+Chunk 0: 66 tokens | Total: 66 | Utilization: 1.61%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 50: 29 tokens | Total: 1590 | Utilization: 38.82%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 100: 36 tokens | Total: 3398 | Utilization: 82.96%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 120: 48 tokens | Total: 4133 | Utilization: 100.90%
+[window 4096] context full at chunk 120
+[window 4096] running recall (this can take a while at large ctx)...
+Results saved to llama31_8b_window_4096_results.json
+
+======================================================================
+=== WINDOW 8192 (8k) ===
+======================================================================
+[window 8192] feeding up to 332 FLORES chunks
+Chunk 0: 66 tokens | Total: 66 | Utilization: 0.81%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 50: 29 tokens | Total: 1570 | Utilization: 19.17%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 100: 36 tokens | Total: 3358 | Utilization: 40.99%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 150: 25 tokens | Total: 5084 | Utilization: 62.06%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 200: 33 tokens | Total: 6517 | Utilization: 79.55%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 250: 17 tokens | Total: 7883 | Utilization: 96.23%
+Chunk 263: 40 tokens | Total: 8229 | Utilization: 100.45%
+[window 8192] context full at chunk 263
+[window 8192] running recall (this can take a while at large ctx)...
+Results saved to llama31_8b_window_8192_results.json
+
+======================================================================
+=== WINDOW 16384 (16k) ===
+======================================================================
+[window 16384] feeding up to 665 FLORES chunks
+Chunk 0: 66 tokens | Total: 66 | Utilization: 0.40%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 50: 29 tokens | Total: 1570 | Utilization: 9.58%
+Chunk 100: 36 tokens | Total: 3338 | Utilization: 20.37%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 150: 25 tokens | Total: 5065 | Utilization: 30.91%
+Chunk 200: 33 tokens | Total: 6477 | Utilization: 39.53%
+Chunk 250: 17 tokens | Total: 7823 | Utilization: 47.75%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 300: 32 tokens | Total: 9372 | Utilization: 57.20%
+Chunk 350: 28 tokens | Total: 10621 | Utilization: 64.83%
+Chunk 400: 15 tokens | Total: 12183 | Utilization: 74.36%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 450: 43 tokens | Total: 13764 | Utilization: 84.01%
+Chunk 500: 27 tokens | Total: 15496 | Utilization: 94.58%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 525: 49 tokens | Total: 16394 | Utilization: 100.06%
+[window 16384] context full at chunk 525
+[window 16384] running recall (this can take a while at large ctx)...
+Results saved to llama31_8b_window_16384_results.json
+
+======================================================================
+=== WINDOW 32768 (32k) ===
+======================================================================
+[window 32768] feeding up to 1331 FLORES chunks
+Chunk 0: 66 tokens | Total: 66 | Utilization: 0.20%
+Chunk 50: 29 tokens | Total: 1552 | Utilization: 4.74%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 100: 36 tokens | Total: 3338 | Utilization: 10.19%
+Chunk 150: 25 tokens | Total: 5045 | Utilization: 15.40%
+Chunk 200: 33 tokens | Total: 6457 | Utilization: 19.71%
+Chunk 250: 17 tokens | Total: 7803 | Utilization: 23.81%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 300: 32 tokens | Total: 9353 | Utilization: 28.54%
+Chunk 350: 28 tokens | Total: 10602 | Utilization: 32.35%
+Chunk 400: 15 tokens | Total: 12164 | Utilization: 37.12%
+Chunk 450: 43 tokens | Total: 13724 | Utilization: 41.88%
+Chunk 500: 27 tokens | Total: 15456 | Utilization: 47.17%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 550: 38 tokens | Total: 17134 | Utilization: 52.29%
+Chunk 600: 18 tokens | Total: 18559 | Utilization: 56.64%
+Chunk 650: 48 tokens | Total: 20149 | Utilization: 61.49%
+Chunk 700: 23 tokens | Total: 21682 | Utilization: 66.17%
+Chunk 750: 26 tokens | Total: 23201 | Utilization: 70.80%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 800: 27 tokens | Total: 24733 | Utilization: 75.48%
+Chunk 850: 31 tokens | Total: 26340 | Utilization: 80.38%
+Chunk 900: 36 tokens | Total: 27793 | Utilization: 84.82%
+Chunk 950: 36 tokens | Total: 29508 | Utilization: 90.05%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 1000: 78 tokens | Total: 31227 | Utilization: 95.30%
+Chunk 1046: 36 tokens | Total: 32793 | Utilization: 100.08%
+[window 32768] context full at chunk 1046
+[window 32768] running recall (this can take a while at large ctx)...
+Results saved to llama31_8b_window_32768_results.json
+
+======================================================================
+=== WINDOW 65536 (64k) ===
+======================================================================
+[window 65536] feeding up to 2662 FLORES chunks
+Chunk 0: 66 tokens | Total: 66 | Utilization: 0.10%
+Chunk 50: 29 tokens | Total: 1552 | Utilization: 2.37%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 100: 36 tokens | Total: 3338 | Utilization: 5.09%
+Chunk 150: 25 tokens | Total: 5045 | Utilization: 7.70%
+Chunk 200: 33 tokens | Total: 6457 | Utilization: 9.85%
+Chunk 250: 17 tokens | Total: 7803 | Utilization: 11.91%
+Chunk 300: 32 tokens | Total: 9333 | Utilization: 14.24%
+Chunk 350: 28 tokens | Total: 10582 | Utilization: 16.15%
+Chunk 400: 15 tokens | Total: 12144 | Utilization: 18.53%
+Chunk 450: 43 tokens | Total: 13704 | Utilization: 20.91%
+Chunk 500: 27 tokens | Total: 15436 | Utilization: 23.55%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 550: 38 tokens | Total: 17115 | Utilization: 26.12%
+Chunk 600: 18 tokens | Total: 18540 | Utilization: 28.29%
+Chunk 650: 48 tokens | Total: 20130 | Utilization: 30.72%
+Chunk 700: 23 tokens | Total: 21663 | Utilization: 33.06%
+Chunk 750: 26 tokens | Total: 23182 | Utilization: 35.37%
+Chunk 800: 27 tokens | Total: 24693 | Utilization: 37.68%
+Chunk 850: 31 tokens | Total: 26300 | Utilization: 40.13%
+Chunk 900: 36 tokens | Total: 27753 | Utilization: 42.35%
+Chunk 950: 36 tokens | Total: 29468 | Utilization: 44.96%
+Chunk 1000: 78 tokens | Total: 31167 | Utilization: 47.56%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 1050: 37 tokens | Total: 32875 | Utilization: 50.16%
+Chunk 1100: 16 tokens | Total: 34569 | Utilization: 52.75%
+Chunk 1150: 31 tokens | Total: 36068 | Utilization: 55.04%
+Chunk 1200: 49 tokens | Total: 37774 | Utilization: 57.64%
+Chunk 1250: 14 tokens | Total: 39198 | Utilization: 59.81%
+Chunk 1300: 30 tokens | Total: 40688 | Utilization: 62.08%
+Chunk 1350: 20 tokens | Total: 42193 | Utilization: 64.38%
+Chunk 1400: 47 tokens | Total: 43791 | Utilization: 66.82%
+Chunk 1450: 41 tokens | Total: 45507 | Utilization: 69.44%
+Chunk 1500: 61 tokens | Total: 47358 | Utilization: 72.26%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 1550: 27 tokens | Total: 49174 | Utilization: 75.03%
+Chunk 1600: 30 tokens | Total: 50771 | Utilization: 77.47%
+Chunk 1650: 30 tokens | Total: 52223 | Utilization: 79.69%
+Chunk 1700: 28 tokens | Total: 53908 | Utilization: 82.26%
+Chunk 1750: 25 tokens | Total: 55496 | Utilization: 84.68%
+Chunk 1800: 23 tokens | Total: 57076 | Utilization: 87.09%
+Chunk 1850: 23 tokens | Total: 58682 | Utilization: 89.54%
+Chunk 1900: 32 tokens | Total: 60222 | Utilization: 91.89%
+Chunk 1950: 32 tokens | Total: 61840 | Utilization: 94.36%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 2000: 38 tokens | Total: 63395 | Utilization: 96.73%
+Chunk 2050: 44 tokens | Total: 64868 | Utilization: 98.98%
+Chunk 2068: 49 tokens | Total: 65564 | Utilization: 100.04%
+[window 65536] context full at chunk 2068
+[window 65536] running recall (this can take a while at large ctx)...
+Results saved to llama31_8b_window_65536_results.json
+
+======================================================================
+=== WINDOW 131072 (128k) ===
+======================================================================
+[window 131072] feeding up to 5324 FLORES chunks
+Chunk 0: 66 tokens | Total: 66 | Utilization: 0.05%
+Chunk 50: 29 tokens | Total: 1552 | Utilization: 1.18%
+Chunk 100: 36 tokens | Total: 3320 | Utilization: 2.53%
+Chunk 150: 25 tokens | Total: 5027 | Utilization: 3.84%
+Chunk 200: 33 tokens | Total: 6439 | Utilization: 4.91%
+  >>> INJECTED @ 5%: MARKER_FIVE_PERCENT_AURORA
+Chunk 250: 17 tokens | Total: 7803 | Utilization: 5.95%
+Chunk 300: 32 tokens | Total: 9333 | Utilization: 7.12%
+Chunk 350: 28 tokens | Total: 10582 | Utilization: 8.07%
+Chunk 400: 15 tokens | Total: 12144 | Utilization: 9.27%
+Chunk 450: 43 tokens | Total: 13704 | Utilization: 10.46%
+Chunk 500: 27 tokens | Total: 15436 | Utilization: 11.78%
+Chunk 550: 38 tokens | Total: 17095 | Utilization: 13.04%
+Chunk 600: 18 tokens | Total: 18520 | Utilization: 14.13%
+Chunk 650: 48 tokens | Total: 20110 | Utilization: 15.34%
+Chunk 700: 23 tokens | Total: 21643 | Utilization: 16.51%
+Chunk 750: 26 tokens | Total: 23162 | Utilization: 17.67%
+Chunk 800: 27 tokens | Total: 24673 | Utilization: 18.82%
+Chunk 850: 31 tokens | Total: 26280 | Utilization: 20.05%
+Chunk 900: 36 tokens | Total: 27733 | Utilization: 21.16%
+Chunk 950: 36 tokens | Total: 29448 | Utilization: 22.47%
+Chunk 1000: 78 tokens | Total: 31147 | Utilization: 23.76%
+  >>> INJECTED @ 25%: MARKER_TWENTY_FIVE_PERCENT_HORIZON
+Chunk 1050: 37 tokens | Total: 32856 | Utilization: 25.07%
+Chunk 1100: 16 tokens | Total: 34550 | Utilization: 26.36%
+Chunk 1150: 31 tokens | Total: 36049 | Utilization: 27.50%
+Chunk 1200: 49 tokens | Total: 37755 | Utilization: 28.80%
+Chunk 1250: 14 tokens | Total: 39179 | Utilization: 29.89%
+Chunk 1300: 30 tokens | Total: 40669 | Utilization: 31.03%
+Chunk 1350: 20 tokens | Total: 42174 | Utilization: 32.18%
+Chunk 1400: 47 tokens | Total: 43772 | Utilization: 33.40%
+Chunk 1450: 41 tokens | Total: 45488 | Utilization: 34.70%
+Chunk 1500: 61 tokens | Total: 47339 | Utilization: 36.12%
+Chunk 1550: 27 tokens | Total: 49134 | Utilization: 37.49%
+Chunk 1600: 30 tokens | Total: 50731 | Utilization: 38.70%
+Chunk 1650: 30 tokens | Total: 52183 | Utilization: 39.81%
+Chunk 1700: 28 tokens | Total: 53868 | Utilization: 41.10%
+Chunk 1750: 25 tokens | Total: 55456 | Utilization: 42.31%
+Chunk 1800: 23 tokens | Total: 57036 | Utilization: 43.52%
+Chunk 1850: 23 tokens | Total: 58642 | Utilization: 44.74%
+Chunk 1900: 32 tokens | Total: 60182 | Utilization: 45.92%
+Chunk 1950: 32 tokens | Total: 61800 | Utilization: 47.15%
+Chunk 2000: 38 tokens | Total: 63335 | Utilization: 48.32%
+Chunk 2050: 44 tokens | Total: 64808 | Utilization: 49.44%
+  >>> INJECTED @ 50%: MARKER_FIFTY_PERCENT_ZENITH
+Chunk 2100: 32 tokens | Total: 66651 | Utilization: 50.85%
+Chunk 2150: 37 tokens | Total: 68377 | Utilization: 52.17%
+Chunk 2200: 24 tokens | Total: 69798 | Utilization: 53.25%
+Chunk 2250: 58 tokens | Total: 71150 | Utilization: 54.28%
+Chunk 2300: 36 tokens | Total: 72655 | Utilization: 55.43%
+Chunk 2350: 34 tokens | Total: 73883 | Utilization: 56.37%
+Chunk 2400: 47 tokens | Total: 75420 | Utilization: 57.54%
+Chunk 2450: 24 tokens | Total: 77003 | Utilization: 58.75%
+Chunk 2500: 50 tokens | Total: 78690 | Utilization: 60.04%
+Chunk 2550: 21 tokens | Total: 80329 | Utilization: 61.29%
+Chunk 2600: 29 tokens | Total: 81904 | Utilization: 62.49%
+Chunk 2650: 27 tokens | Total: 83366 | Utilization: 63.60%
+Chunk 2700: 19 tokens | Total: 84933 | Utilization: 64.80%
+Chunk 2750: 23 tokens | Total: 86493 | Utilization: 65.99%
+Chunk 2800: 36 tokens | Total: 87998 | Utilization: 67.14%
+Chunk 2850: 24 tokens | Total: 89603 | Utilization: 68.36%
+Chunk 2900: 26 tokens | Total: 91012 | Utilization: 69.44%
+Chunk 2950: 28 tokens | Total: 92687 | Utilization: 70.71%
+Chunk 3000: 26 tokens | Total: 94383 | Utilization: 72.01%
+Chunk 3050: 30 tokens | Total: 96137 | Utilization: 73.35%
+Chunk 3100: 34 tokens | Total: 97840 | Utilization: 74.65%
+  >>> INJECTED @ 75%: MARKER_SEVENTY_FIVE_PERCENT_SOLSTICE
+Chunk 3150: 24 tokens | Total: 99333 | Utilization: 75.79%
+Chunk 3200: 19 tokens | Total: 100955 | Utilization: 77.02%
+Chunk 3250: 31 tokens | Total: 102460 | Utilization: 78.17%
+Chunk 3300: 37 tokens | Total: 103966 | Utilization: 79.32%
+Chunk 3350: 20 tokens | Total: 105499 | Utilization: 80.49%
+Chunk 3400: 17 tokens | Total: 107067 | Utilization: 81.69%
+Chunk 3450: 33 tokens | Total: 108761 | Utilization: 82.98%
+Chunk 3500: 25 tokens | Total: 110554 | Utilization: 84.35%
+Chunk 3550: 48 tokens | Total: 112340 | Utilization: 85.71%
+Chunk 3600: 20 tokens | Total: 114004 | Utilization: 86.98%
+Chunk 3650: 26 tokens | Total: 115547 | Utilization: 88.16%
+Chunk 3700: 26 tokens | Total: 117208 | Utilization: 89.42%
+Chunk 3750: 33 tokens | Total: 118773 | Utilization: 90.62%
+Chunk 3800: 29 tokens | Total: 120327 | Utilization: 91.80%
+Chunk 3850: 46 tokens | Total: 121918 | Utilization: 93.02%
+Chunk 3900: 34 tokens | Total: 123526 | Utilization: 94.24%
+  >>> INJECTED @ 95%: MARKER_NINETY_FIVE_PERCENT_APEX
+Chunk 3950: 65 tokens | Total: 125122 | Utilization: 95.46%
+Chunk 4000: 15 tokens | Total: 126642 | Utilization: 96.62%
+Chunk 4050: 26 tokens | Total: 128135 | Utilization: 97.76%
+Chunk 4100: 32 tokens | Total: 129957 | Utilization: 99.15%
+Chunk 4134: 26 tokens | Total: 131072 | Utilization: 100.00%
+[window 131072] context full at chunk 4134
+[window 131072] running recall (this can take a while at large ctx)...
+Results saved to llama31_8b_window_131072_results.json
+
+======================================================================
+=== SWEEP SUMMARY ===
+======================================================================
+  window |  tokens |  fill_s |  recall_s | recall @ 5/25/50/75/95%
+    4096 |    4133 |     0.0 |      31.4 | N N N Y Y
+    8192 |    8229 |     0.0 |      34.2 | N N N Y Y
+   16384 |   16394 |     0.0 |      69.6 | N N N Y Y
+   32768 |   32793 |     0.0 |     159.0 | Y N N N Y
+   65536 |   65564 |     0.0 |     476.1 | N N N Y Y
+  131072 |  131072 |     0.0 |    1272.9 | N N N N Y
+
+Full results: /home/antoine/Documents/WORK/CODE/LABS/fertiscope/neddle_degradation/sweep_results.json

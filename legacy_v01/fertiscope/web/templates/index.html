@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FertiScope - EN ↔ VI Tokenizer Cost Analyzer</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header>
+  <h1>FertiScope</h1>
+  <p class="tag">Tokenizer fertility + cost + context budget for English ↔ Vietnamese · v0.1 · local · multi-turn</p>
+</header>
+
+<main>
+
+<section class="card" id="inputs">
+  <h2>1. Conversation turns</h2>
+  <p class="hint">
+    Each row is one message in a chatbot conversation. FertiScope simulates how a stateless LLM API
+    bills you: every turn you send re-pays the cumulative history. Add turns to see the bill compound.
+  </p>
+
+  <div class="mode-row">
+    <button id="load-flores" type="button">↻ Load FLORES sample (1 turn)</button>
+    <button id="load-convo" type="button">↻ Load 5-turn conversation</button>
+    <button id="clear-text" type="button">Clear</button>
+  </div>
+
+  <div id="turns-list"></div>
+
+  <button id="add-turn" type="button" class="add-turn">+ Add turn</button>
+</section>
+
+<section class="card" id="tokenizers">
+  <h2>2. Tokenizer (pick one)</h2>
+  <div id="tokenizer-list" class="checkbox-grid">
+    <span class="hint">Loading...</span>
+  </div>
+  <p class="hint">Click <em>Analyze conversation</em> once - all tokenizers are computed and cached. Then switch tokenizers below to swap the displayed result instantly, no re-analysis needed.</p>
+</section>
+
+<section class="card actions">
+  <button id="analyze-btn" type="button" class="primary">Analyze conversation</button>
+  <span id="status" class="status"></span>
+</section>
+
+<section id="results"></section>
+
+</main>
+
+<footer>
+  <p>FertiScope v0.1 · MIT · zero LLM API calls during analysis · <a href="/docs">/docs API</a></p>
+</footer>
+
+<template id="turn-row-template">
+  <div class="turn-row">
+    <div class="turn-header">
+      <span class="turn-number"></span>
+      <select class="role-select">
+        <option value="system">system</option>
+        <option value="user" selected>user</option>
+        <option value="assistant">assistant</option>
+      </select>
+      <button type="button" class="remove-turn" title="Remove this turn">×</button>
+    </div>
+    <div class="two-col">
+      <div>
+        <label>English</label>
+        <textarea class="en-text" rows="3" placeholder="English text..."></textarea>
+      </div>
+      <div>
+        <label>Vietnamese</label>
+        <textarea class="vi-text" rows="3" placeholder="Vietnamese parallel..."></textarea>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="convo-report-template">
+  <section class="card report">
+    <header class="report-header">
+      <h3 class="tokenizer-name"></h3>
+      <span class="ratio-badge"></span>
+    </header>
+
+    <div class="totals-strip">
+      <div class="totals-cell"><span class="label">Total EN tokens</span><span class="value en-total"></span></div>
+      <div class="totals-cell"><span class="label">Total VI tokens</span><span class="value vi-total"></span></div>
+      <div class="totals-cell"><span class="label">Fertility ratio</span><span class="value ratio-val"></span></div>
+      <div class="totals-cell"><span class="label">Overflow @ 4096</span><span class="value overflow-4096"></span></div>
+      <div class="totals-cell"><span class="label">Overflow @ 8192</span><span class="value overflow-8192"></span></div>
+    </div>
+    <div class="totals-strip projection-strip">
+      <div class="totals-cell"><span class="label">Projected slope EN</span><span class="value slope-en"></span></div>
+      <div class="totals-cell"><span class="label">Projected slope VI</span><span class="value slope-vi"></span></div>
+      <div class="totals-cell"><span class="label">Forecast: VI &gt; 4096 at</span><span class="value pred-4096"></span></div>
+      <div class="totals-cell"><span class="label">Forecast: VI &gt; 8192 at</span><span class="value pred-8192"></span></div>
+      <div class="totals-cell"><span class="label">Projection horizon</span><span class="value proj-horizon"></span></div>
+    </div>
+
+    <h4>Per-turn breakdown</h4>
+    <table class="turns-table">
+      <thead>
+        <tr>
+          <th>#</th><th>Role</th>
+          <th>EN tok</th><th>VI tok</th>
+          <th>Cumul EN</th><th>Cumul VI</th>
+          <th class="cost-col">EN $ this turn</th>
+          <th class="cost-col">VI $ this turn</th>
+          <th>% of 4096</th><th>% of 8192</th>
+        </tr>
+      </thead>
+      <tbody class="turns-body"></tbody>
+    </table>
+    <p class="hint cost-footnote">Per-turn $ uses the cheapest available provider for this tokenizer family <span class="provider-tag"></span>. Total bill in the Cost block below.</p>
+
+    <h4>Cumulative tokens per turn</h4>
+    <div class="chart-wrap"></div>
+
+    <div class="prices-block">
+      <h4>Cost (input only, USD across the whole conversation)</h4>
+      <p class="hint">
+        <strong>Per-corpus</strong> = if you billed the conversation as one flat text.
+        <strong>Stateless API</strong> = realistic chatbot cost where each turn re-sends history (∑ of cumulative tokens).
+      </p>
+      <table class="prices">
+        <thead>
+          <tr><th>Provider</th><th>Model</th><th>Per-corpus EN</th><th>Per-corpus VI</th><th>Stateless EN</th><th>Stateless VI</th></tr>
+        </thead>
+        <tbody class="prices-body"></tbody>
+      </table>
+    </div>
+  </section>
+</template>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
