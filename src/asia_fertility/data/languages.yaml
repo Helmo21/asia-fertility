@@ -1,0 +1,131 @@
+# 16 study languages: 1 baseline (English) + 15 lower-resource Asian languages.
+# FLORES tags from facebook/flores HF dataset. Script codes from ISO 15924.
+schema_version: "1.0"
+languages:
+  - iso: eng
+    name: English
+    script: Latn
+    family: Indo-European
+    flores_tag: eng_Latn
+    spaceless: false
+    notes: "Baseline language. ~1.26 tokens/word on FLORES."
+
+  - iso: vie
+    name: Vietnamese
+    script: Latn
+    family: Austroasiatic
+    flores_tag: vie_Latn
+    spaceless: false
+    notes: "Latin + diacritics. Six tones, monosyllabic."
+
+  - iso: ind
+    name: Indonesian
+    script: Latn
+    family: Austronesian
+    flores_tag: ind_Latn
+    spaceless: false
+    notes: "Closely related to Malay."
+
+  - iso: zsm
+    name: Malay
+    script: Latn
+    family: Austronesian
+    flores_tag: zsm_Latn
+    spaceless: false
+    notes: "Standard Malay; FLORES uses 'zsm_Latn'."
+
+  - iso: tgl
+    name: Filipino
+    script: Latn
+    family: Austronesian
+    flores_tag: tgl_Latn
+    spaceless: false
+    notes: "Tagalog (basis of standard Filipino)."
+
+  - iso: tha
+    name: Thai
+    script: Thai
+    family: Tai-Kadai
+    flores_tag: tha_Thai
+    spaceless: true
+    notes: "No word delimiters; pythainlp required for segmentation."
+
+  - iso: hin
+    name: Hindi
+    script: Deva
+    family: Indo-Aryan
+    flores_tag: hin_Deva
+    spaceless: false
+    notes: "Devanagari script."
+
+  - iso: ben
+    name: Bengali
+    script: Beng
+    family: Indo-Aryan
+    flores_tag: ben_Beng
+    spaceless: false
+    notes: "Bengali script."
+
+  - iso: sin
+    name: Sinhala
+    script: Sinh
+    family: Indo-Aryan
+    flores_tag: sin_Sinh
+    spaceless: false
+    notes: "Sinhala script; high tokenizer tax on cl100k."
+
+  - iso: tam
+    name: Tamil
+    script: Taml
+    family: Dravidian
+    flores_tag: tam_Taml
+    spaceless: false
+    notes: "Spoken in India, Sri Lanka, Singapore, Malaysia."
+
+  - iso: tel
+    name: Telugu
+    script: Telu
+    family: Dravidian
+    flores_tag: tel_Telu
+    spaceless: false
+    notes: ""
+
+  - iso: kan
+    name: Kannada
+    script: Knda
+    family: Dravidian
+    flores_tag: kan_Knda
+    spaceless: false
+    notes: ""
+
+  - iso: mal
+    name: Malayalam
+    script: Mlym
+    family: Dravidian
+    flores_tag: mal_Mlym
+    spaceless: false
+    notes: ""
+
+  - iso: mya
+    name: Burmese
+    script: Mymr
+    family: Sino-Tibetan
+    flores_tag: mya_Mymr
+    spaceless: true
+    notes: "Worst-hit script on cl100k (~11x English)."
+
+  - iso: khm
+    name: Khmer
+    script: Khmr
+    family: Austroasiatic
+    flores_tag: khm_Khmr
+    spaceless: true
+    notes: ""
+
+  - iso: lao
+    name: Lao
+    script: Laoo
+    family: Tai-Kadai
+    flores_tag: lao_Laoo
+    spaceless: true
+    notes: ""
