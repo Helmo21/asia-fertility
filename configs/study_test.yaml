@@ -1,0 +1,14 @@
+name: test
+description: "CI smoke study — 3 languages × 2 tokenizers × FLORES dev[0:10]."
+languages: [eng, vie, tam]
+tokenizers: [openai/o200k_base, openai/cl100k_base]
+corpora: [flores]
+baseline_language: eng
+n_sentences: 10
+split: dev
+n_bootstrap: 100
+rng_seed: 42
+windows: [4096, 8192]
+prices_snapshot: _defaults/prices_2026-06.yaml
+fx_snapshot: _defaults/fx_2026-06.yaml
+output_dir: runs/test

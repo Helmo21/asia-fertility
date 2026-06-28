@@ -1,0 +1,40 @@
+name: main
+description: "16 Asian languages × tokenizers × FLORES-200 dev — main study for the paper."
+languages:
+  - eng
+  - vie
+  - ind
+  - zsm
+  - tgl
+  - tha
+  - hin
+  - ben
+  - sin
+  - tam
+  - tel
+  - kan
+  - mal
+  - mya
+  - khm
+  - lao
+tokenizers:
+  - openai/o200k_base
+  - openai/cl100k_base
+  - openai/o200k_harmony
+  - meta/llama-3.1
+  - mistral/tekken
+  - qwen/qwen3
+  - deepseek/v3
+  - bigscience/bloom
+  - cohere/aya-expanse
+  - google/gemma-2
+corpora: [flores]
+baseline_language: eng
+n_sentences: null
+split: dev
+n_bootstrap: 1000
+rng_seed: 42
+windows: [4096, 8192, 32768, 131072]
+prices_snapshot: _defaults/prices_2026-06.yaml
+fx_snapshot: _defaults/fx_2026-06.yaml
+output_dir: runs/main

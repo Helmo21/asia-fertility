@@ -1,0 +1,25 @@
+schema_version: "1.0"
+snapshot_date: 2026-06-28
+source: "ECB reference rates + cross-rates, fetched 2026-06-28"
+base: USD
+rates:
+  USD: 1.0
+  VND: 25400.0
+  IDR: 16280.0
+  MYR: 4.72
+  THB: 36.50
+  PHP: 58.30
+  INR: 83.10
+  BDT: 109.50
+  LKR: 295.00
+  MMK: 2100.00
+  KHR: 4100.00
+  LAK: 21500.00
+  EUR: 0.92
+  GBP: 0.79
+  JPY: 156.80
+  CNY: 7.25
+  KRW: 1340.00
+  TWD: 31.20
+  SGD: 1.35
+  HKD: 7.82
