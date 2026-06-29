@@ -94,7 +94,7 @@ preferred-citation:
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![arXiv](https://img.shields.io/badge/arXiv-26XX.XXXXX-b31b1b)](https://arxiv.org/abs/26XX.XXXXX)
 [![Web](https://img.shields.io/badge/demo-fertiscope.vercel.app-black)](https://fertiscope.vercel.app)
-[![HuggingFace Dataset](https://img.shields.io/badge/HF-fertiscope--results-ffd21e)](https://huggingface.co/datasets/trustia/fertiscope-results)
+[![HuggingFace Dataset](https://img.shields.io/badge/HF-asia--fertility-ffd21e)](https://huggingface.co/datasets/Helmo21/asia-fertility)
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://github.com/dangpleo-ctrl/fertiscope)
 
 </div>

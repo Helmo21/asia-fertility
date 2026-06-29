@@ -7,7 +7,7 @@ Blocks: #037
 
 ## Scope
 
-Upload `runs/main/results.parquet` and `runs/niah/main/results.csv` to a HuggingFace dataset repo (`trustia/fertiscope-results`) so downstream consumers can `load_dataset(...)` without cloning the GitHub repo. Includes a one-time `huggingface-cli login` for first release; subsequent releases automate via `HF_TOKEN`.
+Upload `runs/main/results.parquet` and `runs/niah/main/results.csv` to a HuggingFace dataset repo (`Helmo21/asia-fertility`) so downstream consumers can `load_dataset(...)` without cloning the GitHub repo. Includes a one-time `huggingface-cli login` for first release; subsequent releases automate via `HF_TOKEN`.
 
 ### Files to create
 
@@ -30,7 +30,7 @@ Usage:
     python scripts/publish_hf_dataset.py \
       --run runs/main \
       --niah-run runs/niah/main \
-      --repo trustia/fertiscope-results \
+      --repo Helmo21/asia-fertility \
       --version v0.3.0
 """
 from __future__ import annotations
@@ -240,7 +240,7 @@ jobs:
           uv run python scripts/publish_hf_dataset.py \
             --run ${{ inputs.run_dir }} \
             --niah-run ${{ inputs.niah_run_dir }} \
-            --repo trustia/fertiscope-results \
+            --repo Helmo21/asia-fertility \
             --version ${{ inputs.version }}
 ```
 
@@ -248,21 +248,21 @@ jobs:
 
 - HF dataset repo must be **created manually** the first time (one-click UI at `huggingface.co/new-dataset`).
 - The script is idempotent: re-uploading the same version overwrites files in the `{version}/` subdir + the `latest/` mirror.
-- `HF_TOKEN` is the ONE secret stored as a GitHub Actions secret (Settings → Secrets and variables → Actions). Scope: write to `trustia/fertiscope-results`.
-- The `latest/` mirror lets downstream `load_dataset("trustia/fertiscope-results", "leaderboard")` always get the most recent without specifying a version.
+- `HF_TOKEN` is the ONE secret stored as a GitHub Actions secret (Settings → Secrets and variables → Actions). Scope: write to `Helmo21/asia-fertility`.
+- The `latest/` mirror lets downstream `load_dataset("Helmo21/asia-fertility", "leaderboard")` always get the most recent without specifying a version.
 - The HF dataset README has YAML frontmatter that controls HF's dataset viewer.
 
 ## Acceptance Criteria
 
 - [ ] `scripts/publish_hf_dataset.py` runs locally with `--dry-run` against a fixture run dir.
 - [ ] Without `HF_TOKEN`: exits with helpful error message.
-- [ ] With `HF_TOKEN` (real, write-scoped): uploads all expected files to `trustia/fertiscope-results`.
+- [ ] With `HF_TOKEN` (real, write-scoped): uploads all expected files to `Helmo21/asia-fertility`.
 - [ ] Both `{version}/` and `latest/` paths populated.
 - [ ] Commit message includes `version` and manifest SHA prefix.
 - [ ] Missing files (e.g. no NIAH run) are skipped, not crashing.
 - [ ] `.github/workflows/publish_hf.yml` valid YAML and dispatchable.
 - [ ] HF dataset README renders correctly with frontmatter.
-- [ ] After publish: `pip install datasets; load_dataset("trustia/fertiscope-results", "leaderboard")` works.
+- [ ] After publish: `pip install datasets; load_dataset("Helmo21/asia-fertility", "leaderboard")` works.
 
 ## User Stories
 
@@ -270,14 +270,14 @@ jobs:
 
 1. Runs `fertiscope run --config configs/study_main.yaml`.
 2. Runs `fertiscope niah run --config configs/niah_main.yaml`.
-3. `HF_TOKEN=... python scripts/publish_hf_dataset.py --run runs/main --niah-run runs/niah/main --repo trustia/fertiscope-results --version v0.3.0`.
+3. `HF_TOKEN=... python scripts/publish_hf_dataset.py --run runs/main --niah-run runs/niah/main --repo Helmo21/asia-fertility --version v0.3.0`.
 4. Sees ✓ for 10 uploads.
 5. HF dataset page updated.
 
 ### Story: Data scientist loads results
 
 1. `pip install datasets`.
-2. `from datasets import load_dataset; ds = load_dataset("trustia/fertiscope-results", "leaderboard")`.
+2. `from datasets import load_dataset; ds = load_dataset("Helmo21/asia-fertility", "leaderboard")`.
 3. Gets a parquet-backed dataset object.
 4. Filters by language/tokenizer in pandas.
 

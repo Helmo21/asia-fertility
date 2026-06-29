@@ -3,7 +3,7 @@
 **Date**: 2026-06-29
 **Author**: Antoine Pedretti
 **Repo**: https://github.com/Helmo21/asia-fertility
-**HF dataset**: https://huggingface.co/datasets/trustya/asia-fertility
+**HF dataset**: https://huggingface.co/datasets/Helmo21/asia-fertility
 
 ## What shipped
 
@@ -31,7 +31,7 @@
 - `runs/main/figures/` — 6 PNG + 6 SVG at 300dpi
 - `runs/main/manifest.json` — SHA256 of config, prices, FX + tokenizer versions
 - `runs/niah/main/results.csv` — 536-call NIAH benchmark (gpt-4o-mini, gpt-3.5-turbo, llama-3.1-8b-instruct × 6 langs × 3 fills × 5 positions × 2 trials)
-- Published to HF dataset `trustya/asia-fertility` under `v0.2.0/`
+- Published to HF dataset `Helmo21/asia-fertility` under `v0.2.0/`
 
 ### Paper (LaTeX)
 - `paper/paper.tex` — 8-section manuscript modeled on Somide 2026
