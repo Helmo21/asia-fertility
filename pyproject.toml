@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "asia-fertility"
-version = "0.2.1"
+version = "0.2.2"
 description = "Tokenizer fertility, cost, and multi-turn context-budget analyzer for low-resource Asian languages."
 authors = [{ name = "Antoine Pedretti" }]
 license = { text = "MIT" }
@@ -68,8 +68,22 @@ asia-fertility = "asia_fertility.cli:app"
 [tool.hatch.build.targets.wheel]
 packages = ["src/asia_fertility"]
 
+# Hatchling defaults skip non-Python files under packages. Force-include the
+# bundled YAML data shipped under asia_fertility/data/ and asia_fertility/_defaults/.
+[tool.hatch.build.targets.wheel.force-include]
+"src/asia_fertility/data/__init__.py" = "asia_fertility/data/__init__.py"
+"src/asia_fertility/data/languages.yaml" = "asia_fertility/data/languages.yaml"
+"src/asia_fertility/_defaults/prices_2026-06.yaml" = "asia_fertility/_defaults/prices_2026-06.yaml"
+"src/asia_fertility/_defaults/fx_2026-06.yaml" = "asia_fertility/_defaults/fx_2026-06.yaml"
+
 [tool.hatch.build.targets.sdist]
-include = ["src/asia_fertility", "configs", "data", "tests", "README.md", "LICENSE"]
+include = ["src/asia_fertility", "configs", "tests", "README.md", "LICENSE"]
+
+[tool.hatch.build.targets.sdist.force-include]
+"src/asia_fertility/data/__init__.py" = "src/asia_fertility/data/__init__.py"
+"src/asia_fertility/data/languages.yaml" = "src/asia_fertility/data/languages.yaml"
+"src/asia_fertility/_defaults/prices_2026-06.yaml" = "src/asia_fertility/_defaults/prices_2026-06.yaml"
+"src/asia_fertility/_defaults/fx_2026-06.yaml" = "src/asia_fertility/_defaults/fx_2026-06.yaml"
 
 [tool.ruff]
 line-length = 100
