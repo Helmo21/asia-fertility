@@ -388,8 +388,18 @@ def niah_run(
 ) -> None:
     """Run the multi-turn needle-in-haystack sweep."""
     import asyncio
+    import os
 
     from asia_fertility.niah import NIAHConfig, estimate_cost_usd, run_niah
+
+    if not os.environ.get("OPENROUTER_API_KEY"):
+        typer.echo(
+            "OPENROUTER_API_KEY not set. Source your .env first:\n"
+            "  source ~/Documents/WORK/CODE/LABS/fertiscope/.env\n"
+            "or export the key in your current shell.",
+            err=True,
+        )
+        raise typer.Exit(code=2)
 
     cfg = NIAHConfig.from_yaml(config)
     cost = estimate_cost_usd(cfg)
@@ -439,8 +449,18 @@ def latency_run(
 ) -> None:
     """Measure wall-clock latency penalty per (model × language) cell."""
     import asyncio
+    import os
 
     from asia_fertility.latency import LatencyConfig, estimate_cost_usd, run_latency
+
+    if not os.environ.get("OPENROUTER_API_KEY"):
+        typer.echo(
+            "OPENROUTER_API_KEY not set. Source your .env first:\n"
+            "  source ~/Documents/WORK/CODE/LABS/fertiscope/.env\n"
+            "or export the key in your current shell.",
+            err=True,
+        )
+        raise typer.Exit(code=2)
 
     cfg = LatencyConfig.from_yaml(config)
     cost = estimate_cost_usd(cfg)
