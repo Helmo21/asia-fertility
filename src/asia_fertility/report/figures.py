@@ -312,3 +312,128 @@ def fig6_premium_vs_recall(
 
     _footer(ax, manifest)
     return _save(fig, Path(out_dir), "fig6_premium_vs_recall")
+
+
+def fig7_cost_vs_latency(
+    run_dir: str | Path,
+    out_dir: Path,
+    latency_run_dir: str | Path | None = None,
+    baseline_lang: str = "eng",
+) -> tuple[Path, Path]:
+    """Scatter: cost_ratio vs measured wall-clock latency ratio.
+
+    Each dot = one (model, language) cell. Color encodes script. The
+    diagonal (latency_ratio = cost_ratio) is overlaid; deviation from
+    the diagonal is the message of the figure. Pearson r is computed
+    and printed in the title.
+
+    If `latency_run_dir` is None or missing, a placeholder is rendered
+    explaining how to produce the data.
+    """
+    _setup_mpl()
+    from pathlib import Path as P
+
+    import matplotlib.pyplot as plt
+
+    df, manifest = load_run(run_dir)
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    if (
+        latency_run_dir is None
+        or not P(latency_run_dir).exists()
+        or not (P(latency_run_dir) / "results.csv").exists()
+    ):
+        ax.text(
+            0.5,
+            0.5,
+            "Figure 7 — latency data required.\n\nRun: asia-fertility latency run --config configs/latency_main.yaml\nThen re-run figures with --latency-run <output_dir>",
+            ha="center",
+            va="center",
+            fontsize=11,
+            transform=ax.transAxes,
+            bbox=dict(boxstyle="round", facecolor="#EEEEFF", edgecolor="#0000CC"),
+        )
+        ax.set_axis_off()
+        _footer(ax, manifest)
+        return _save(fig, Path(out_dir), "fig7_cost_vs_latency")
+
+    import numpy as np
+    import pandas as pd
+
+    lat = pd.read_csv(P(latency_run_dir) / "results.csv")
+    # Drop warmup + errored rows
+    lat = lat[~lat["is_warmup"].astype(str).str.lower().eq("true")]
+    lat = lat[lat["error"].fillna("") == ""]
+
+    # Mean total_ms per (model, iso)
+    g = lat.groupby(["model", "iso"])["total_ms"].mean().reset_index()
+    # Latency ratio per (model, iso) = total_ms(iso) / total_ms(baseline) for that model
+    baselines = g[g["iso"] == baseline_lang].set_index("model")["total_ms"]
+    g = g[g["iso"] != baseline_lang].copy()
+    g["latency_ratio"] = g.apply(
+        lambda r: r["total_ms"] / baselines.get(r["model"], np.nan), axis=1
+    )
+
+    # Cost ratio is tokenizer-dependent. Use cl100k_base as the canonical reference.
+    # (Same as fig2/fig3.)
+    df_cost = df[(df["skip_reason"].isna() | (df["skip_reason"] == ""))]
+    df_cost = df_cost[df_cost["tokenizer"] == "openai/cl100k_base"]
+    cost_by_iso = df_cost.set_index("iso")["cost_ratio"].to_dict()
+    script_by_iso = df_cost.set_index("iso")["script"].to_dict()
+
+    g["cost_ratio"] = g["iso"].map(cost_by_iso)
+    g["script"] = g["iso"].map(script_by_iso)
+    g = g.dropna(subset=["cost_ratio", "latency_ratio"])
+
+    if g.empty:
+        ax.text(
+            0.5,
+            0.5,
+            "No overlapping (model, lang) cells\nbetween leaderboard and latency runs.",
+            ha="center",
+            va="center",
+            transform=ax.transAxes,
+        )
+        ax.set_axis_off()
+        _footer(ax, manifest)
+        return _save(fig, Path(out_dir), "fig7_cost_vs_latency")
+
+    # Plot per-model dots
+    colors = [SCRIPT_COLORS.get(s, "#888") for s in g["script"]]
+    ax.scatter(
+        g["cost_ratio"],
+        g["latency_ratio"],
+        c=colors,
+        s=80,
+        alpha=0.7,
+        edgecolors="black",
+        linewidths=0.5,
+    )
+
+    # Annotate one dot per iso (mean across models if multiple)
+    iso_means = g.groupby("iso")[["cost_ratio", "latency_ratio"]].mean()
+    for iso, row in iso_means.iterrows():
+        ax.annotate(
+            iso,
+            (row["cost_ratio"], row["latency_ratio"]),
+            xytext=(5, 5),
+            textcoords="offset points",
+            fontsize=9,
+        )
+
+    # Diagonal: y = x  (latency_ratio = cost_ratio)
+    lim = max(g["cost_ratio"].max(), g["latency_ratio"].max()) * 1.1
+    ax.plot([1, lim], [1, lim], color="black", linestyle="--", alpha=0.4, label="y = x")
+
+    # Pearson r
+    r = float(np.corrcoef(g["cost_ratio"], g["latency_ratio"])[0, 1])
+
+    ax.set_xlabel("Cost ratio (× English, cl100k_base)")
+    ax.set_ylabel(f"Latency ratio (× {baseline_lang}, wall-clock)")
+    ax.set_title(f"Cost vs measured latency · Pearson r = {r:.3f}", fontsize=13)
+    ax.set_xscale("log")
+    ax.set_yscale("log")
+    ax.legend(loc="upper left", fontsize=8)
+
+    _footer(ax, manifest)
+    return _save(fig, Path(out_dir), "fig7_cost_vs_latency")

@@ -9,6 +9,7 @@ from .figures import (
     fig4_context_exhaustion,
     fig5_in_context_capacity,
     fig6_premium_vs_recall,
+    fig7_cost_vs_latency,
 )
 from .leaderboard import emit_leaderboard, write_leaderboard
 
@@ -20,5 +21,6 @@ __all__ = [
     "fig4_context_exhaustion",
     "fig5_in_context_capacity",
     "fig6_premium_vs_recall",
+    "fig7_cost_vs_latency",
     "write_leaderboard",
 ]

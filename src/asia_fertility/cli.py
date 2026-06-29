@@ -19,11 +19,13 @@ tokenizers_app = typer.Typer(help="Tokenizer registry commands.")
 corpora_app = typer.Typer(help="Corpus registry commands.")
 languages_app = typer.Typer(help="Language registry commands.")
 niah_app = typer.Typer(help="Multi-turn needle-in-haystack benchmark commands.")
+latency_app = typer.Typer(help="Wall-clock latency benchmark commands.")
 
 app.add_typer(tokenizers_app, name="tokenizers")
 app.add_typer(corpora_app, name="corpora")
 app.add_typer(languages_app, name="languages")
 app.add_typer(niah_app, name="niah")
+app.add_typer(latency_app, name="latency")
 
 
 @app.callback(invoke_without_command=True)
@@ -63,19 +65,25 @@ def measure(
     tok = get_tokenizer(tokenizer)
 
     if text is not None:
-        target_metrics = [per_sentence(Sentence(id="cli:0", lang=lang, text=text), tok, segmenter=count_words)]
+        target_metrics = [
+            per_sentence(Sentence(id="cli:0", lang=lang, text=text), tok, segmenter=count_words)
+        ]
         baseline_metrics = None
     else:
         loaded = load_corpus(corpus, path=path) if corpus == "custom" else load_corpus(corpus)
         target_sentences = list(loaded.iter_sentences(lang, limit=n_sentences))
         if lang != baseline_lang:
             baseline_sentences = list(loaded.iter_sentences(baseline_lang, limit=n_sentences))
-            baseline_metrics = [per_sentence(s, tok, segmenter=count_words) for s in baseline_sentences]
+            baseline_metrics = [
+                per_sentence(s, tok, segmenter=count_words) for s in baseline_sentences
+            ]
         else:
             baseline_metrics = None
         target_metrics = [per_sentence(s, tok, segmenter=count_words) for s in target_sentences]
 
-    agg = aggregate_with_cis(target_metrics, baseline=baseline_metrics, n_resamples=n_resamples, rng_seed=rng_seed)
+    agg = aggregate_with_cis(
+        target_metrics, baseline=baseline_metrics, n_resamples=n_resamples, rng_seed=rng_seed
+    )
 
     if json_out:
         import dataclasses
@@ -149,7 +157,9 @@ def cost(
     from rich.console import Console
     from rich.table import Table
 
-    table = Table(title=f"Cost · lang={lang} · output_est={output_tokens_est} tokens", title_style="bold")
+    table = Table(
+        title=f"Cost · lang={lang} · output_est={output_tokens_est} tokens", title_style="bold"
+    )
     table.add_column("Model", style="cyan")
     table.add_column("Tokenizer", style="dim")
     table.add_column("In tok", justify="right")
@@ -203,7 +213,9 @@ def run(
     result = run_study(cfg)
     out = result.write_all(Path(output_dir) if output_dir else None)
     skipped = sum(1 for r in result.rows if r.skip_reason)
-    console.print(f"[bold green]✓[/bold green] Wrote {len(result.rows)} rows ({skipped} skipped) to {out}")
+    console.print(
+        f"[bold green]✓[/bold green] Wrote {len(result.rows)} rows ({skipped} skipped) to {out}"
+    )
     console.print("  results.csv, results.json, results.parquet, leaderboard.json, manifest.json")
     if result.manifest:
         console.print(f"  Manifest SHA: {result.manifest['config_sha256'][:12]}...")
@@ -213,7 +225,9 @@ def run(
 def reproduce(output_dir: str = typer.Option("runs/reproduce", "--output-dir")) -> None:
     """Offline reference suite — one-command credibility demo."""
     typer.echo("`reproduce` is wired to the bundled reference suite, which is not shipped in v0.2.")
-    typer.echo("Run `asia-fertility run --config configs/study_test.yaml` for a small smoke study instead.")
+    typer.echo(
+        "Run `asia-fertility run --config configs/study_test.yaml` for a small smoke study instead."
+    )
     raise typer.Exit(code=1)
 
 
@@ -225,8 +239,9 @@ def figures(
     run_dir: str = typer.Option(..., "--run"),
     out_dir: str = typer.Option(..., "--out"),
     niah_run: str | None = typer.Option(None, "--niah-run"),
+    latency_run: str | None = typer.Option(None, "--latency-run"),
 ) -> None:
-    """Regenerate the 6 paper figures from a study run."""
+    """Regenerate the 7 paper figures from a study run."""
     from pathlib import Path
 
     from asia_fertility.report.figures import (
@@ -236,6 +251,7 @@ def figures(
         fig4_context_exhaustion,
         fig5_in_context_capacity,
         fig6_premium_vs_recall,
+        fig7_cost_vs_latency,
     )
 
     out = Path(out_dir)
@@ -246,6 +262,7 @@ def figures(
         ("fig4", lambda: fig4_context_exhaustion(run_dir, out)),
         ("fig5", lambda: fig5_in_context_capacity(run_dir, out)),
         ("fig6", lambda: fig6_premium_vs_recall(run_dir, out, niah_run)),
+        ("fig7", lambda: fig7_cost_vs_latency(run_dir, out, latency_run)),
     ]:
         png, svg = fn()
         typer.echo(f"  ✓ {name}: {png.name}, {svg.name}")
@@ -409,6 +426,75 @@ def niah_report(output_dir: str = typer.Option(..., "--output-dir")) -> None:
     for (model, iso, fill), hits in sorted(by_cell.items()):
         rate = sum(hits) / len(hits)
         table.add_row(model, iso, str(fill), f"{rate:.2f} ({sum(hits)}/{len(hits)})")
+    Console().print(table)
+
+
+# ----------------------------- latency ------------------------------------ #
+
+
+@latency_app.command("run")
+def latency_run(
+    config: str = typer.Option(..., "--config"),
+    yes: bool = typer.Option(False, "--yes", "-y"),
+) -> None:
+    """Measure wall-clock latency penalty per (model × language) cell."""
+    import asyncio
+
+    from asia_fertility.latency import LatencyConfig, estimate_cost_usd, run_latency
+
+    cfg = LatencyConfig.from_yaml(config)
+    cost = estimate_cost_usd(cfg)
+    typer.echo(
+        f"Total calls: {cfg.total_calls()} "
+        f"({cfg.n_warmup} warmup + {cfg.n_trials} trials per cell, "
+        f"{len(cfg.models)} models × {len(cfg.languages)} langs)"
+    )
+    typer.echo(f"Estimated cost (gpt-4o-mini-equivalent): ~${cost:.4f}")
+    if not yes and not typer.confirm("Proceed?"):
+        raise typer.Exit(code=1)
+    csv_path = asyncio.run(run_latency(cfg))
+    typer.echo(f"✓ wrote {csv_path}")
+
+
+@latency_app.command("report")
+def latency_report_cmd(
+    output_dir: str = typer.Option(..., "--output-dir"),
+    baseline_lang: str = typer.Option("eng", "--baseline-lang"),
+) -> None:
+    """Print latency penalty (× English baseline) per (model × language)."""
+    from rich.console import Console
+    from rich.table import Table
+
+    from asia_fertility.latency import latency_report
+
+    out = latency_report(output_dir, baseline_lang=baseline_lang)
+    summary = out["summary"]
+    penalty = out["latency_penalty"]
+
+    table = Table(title=f"Latency benchmark · {output_dir}/results.csv", title_style="bold")
+    table.add_column("Model", style="cyan")
+    table.add_column("Lang")
+    table.add_column("n", justify="right")
+    table.add_column("Errors", justify="right")
+    table.add_column("Mean total ms", justify="right")
+    table.add_column("95% CI ms", justify="right")
+    table.add_column("Mean TTFT ms", justify="right")
+    table.add_column(f"× {baseline_lang}", justify="right", style="bold")
+
+    rows = sorted(summary.items(), key=lambda kv: kv[0])
+    for key, row in rows:
+        model, iso = key.split("|", 1)
+        p = penalty.get(key)
+        table.add_row(
+            model,
+            iso,
+            str(row["n"]),
+            str(row["errors"]),
+            f"{row['total_ms_mean']:.0f}",
+            f"[{row['total_ms_ci_low']:.0f}, {row['total_ms_ci_high']:.0f}]",
+            f"{row['ttft_ms_mean']:.0f}",
+            f"{p:.2f}×" if p else "—",
+        )
     Console().print(table)
 
 
