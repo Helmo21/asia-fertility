@@ -1,4 +1,4 @@
-"""Smoke tests for the CLI scaffolding."""
+"""Smoke tests for the CLI."""
 
 from __future__ import annotations
 
@@ -34,11 +34,20 @@ def test_help_lists_subcommands() -> None:
         assert sub in r.stdout
 
 
-def test_measure_not_implemented() -> None:
-    r = runner.invoke(app, ["measure", "--text", "x"])
-    assert r.exit_code == 2
+def test_languages_list_works() -> None:
+    r = runner.invoke(app, ["languages", "list"])
+    assert r.exit_code == 0
+    # spot-check a few expected isos appear
+    for iso in ["eng", "tam", "mya", "vie"]:
+        assert iso in r.stdout
 
 
-def test_tokenizers_list_not_implemented() -> None:
-    r = runner.invoke(app, ["tokenizers", "list"])
-    assert r.exit_code == 2
+def test_tokenizers_list_json_works() -> None:
+    import json
+
+    r = runner.invoke(app, ["tokenizers", "list", "--json"])
+    assert r.exit_code == 0
+    rows = json.loads(r.stdout)
+    ids = {row["id"] for row in rows}
+    # the three tiktoken tokenizers must always be registered
+    assert {"openai/o200k_base", "openai/cl100k_base", "openai/o200k_harmony"} <= ids
