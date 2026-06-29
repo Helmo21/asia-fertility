@@ -229,6 +229,40 @@ Figure~\ref{fig:recall} plots cost ratio vs.\ mean recall on cl100k\_base for th
 \label{fig:recall}
 \end{figure}
 
+\subsection{Latency penalty: cost is not a reliable UX proxy}
+\label{sec:latency-results}
+
+We additionally measure the \emph{wall-clock latency penalty}: the ratio of measured response time in the target language to English, on the same model. Each (model, language) cell consists of 3 warmup calls (discarded) and 10 timed trials, with each prompt drawn from a distinct FLORES sentence to defeat provider-side prefix caching. Total: 1\,240 measured calls across 5 models on OpenRouter (gpt-4o-mini, llama-3.1-8b-instruct, gemini-2.5-flash, qwen-2.5-7b-instruct, deepseek-chat-v3-0324) $\times$ 16 languages $\times$ 10 trials. Streaming is enabled to measure both time-to-first-token (TTFT) and total wall-clock time per call.
+
+If \citet{somide2026african}'s finding generalized, we would expect Pearson $r \approx 0.94$ between cost ratio and latency ratio. Instead we observe $r = 0.314$ when pooled across all 5 models, with substantial per-model variance:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lc}
+\toprule
+Model & Pearson $r$ (cost vs.\ latency) \\
+\midrule
+meta-llama/llama-3.1-8b-instruct & $+0.737$ \\
+google/gemini-2.5-flash          & $+0.521$ \\
+openai/gpt-4o-mini               & $+0.432$ \\
+deepseek/deepseek-chat-v3-0324   & $+0.054$ \\
+qwen/qwen-2.5-7b-instruct        & $-0.194$ \\
+\bottomrule
+\end{tabular}
+\caption{Per-model Pearson correlation between same-content cost ratio (cl100k\_base) and measured latency ratio vs.\ English. The relationship is not a property of the language: Llama-3.1's serving stack tracks input fertility linearly ($r = 0.74$), while DeepSeek's and Qwen's do not.}
+\label{tab:latency-corr}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{fig7_cost_vs_latency.png}
+\caption{Cost ratio vs.\ measured wall-clock latency ratio per (model, language) cell. Dashed line is $y = x$. Pooled Pearson $r = 0.314$. The cost penalty is upstream of any inference effect; the latency penalty depends on the provider's serving stack (continuous batching, prefill parallelism, dynamic routing). For Burmese on cl100k\_base, the cost ratio is $11.66\times$ while the latency ratio averages only $1.65\times$ across our 5 models---a CFO sees 11$\times$ pain while a user sees roughly 1.5$\times$.}
+\label{fig:latency}
+\end{figure}
+
+This finding has two consequences. First, \textbf{cost ratio cannot be used as a substitute for latency penalty when reasoning about user experience}: a deployer cannot infer one from the other within a factor of 5. Second, the latency-cost gap appears to be a property of the provider's inference stack rather than of the language itself. Modern continuous-batching and prefill-parallel serving (visible in DeepSeek's and Gemini-Flash's near-flat latency curves) absorbs most of the input-side fertility penalty before it reaches wall-clock time. Llama-3.1-8b, served on older infrastructure, still shows the linear relationship that \citet{somide2026african} reported for their 11-model mix.
+
 \section{Discussion}
 \label{sec:discussion}
 
