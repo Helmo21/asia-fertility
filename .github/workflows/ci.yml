@@ -16,7 +16,7 @@ jobs:
       - uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
-      - run: uv sync --extra dev --extra oai
+      - run: uv sync --extra dev --extra oai --extra niah
       - run: uv run ruff format --check .
       - run: uv run ruff check .
       - run: uv run mypy src/asia_fertility
@@ -37,7 +37,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - run: uv sync --extra dev --extra oai
+      - run: uv sync --extra dev --extra oai --extra niah
       - run: uv run pytest -q --cov=asia_fertility --cov-report=term-missing -m "not slow and not integration"
 
   build:
