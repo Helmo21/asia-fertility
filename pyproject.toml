@@ -74,7 +74,7 @@ include = ["src/asia_fertility", "configs", "data", "tests", "README.md", "LICEN
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-extend-exclude = ["legacy_v01", "fertiscope-web", "token_degradation_fertility"]
+extend-exclude = ["_archive"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
@@ -96,7 +96,7 @@ ignore = [
 strict = false
 ignore_errors = true
 python_version = "3.12"
-exclude = ["legacy_v01", "fertiscope-web", "token_degradation_fertility", "build", "dist", "paper"]
+exclude = ["build", "dist", "paper", "_archive"]
 
 [[tool.mypy.overrides]]
 module = [

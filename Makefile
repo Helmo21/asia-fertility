@@ -42,4 +42,4 @@ reproduce:
 
 clean:
 	rm -rf .ruff_cache .mypy_cache .pytest_cache htmlcov dist build *.egg-info
-	find . -type d -name __pycache__ -not -path "./legacy_v01/*" -not -path "./fertiscope-web/*" -not -path "./token_degradation_fertility/*" -exec rm -rf {} +
+	find . -type d -name __pycache__ -exec rm -rf {} +

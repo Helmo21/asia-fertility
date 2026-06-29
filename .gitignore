@@ -34,15 +34,10 @@ runs/
 .DS_Store
 Thumbs.db
 
-# HF cache symlinks
+# HF cache
 .huggingface/
+data/
 
 # Docs build
 site/
 _site/
-
-# Sibling reference repos (cloned separately)
-fertiscope-web/
-token_degradation_fertility/
-legacy_v01/
-_archive/
