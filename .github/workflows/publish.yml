@@ -49,6 +49,12 @@ jobs:
           name: dist
           path: dist/
       - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          # Disable sigstore attestations — the rekor.sigstore.dev transparency
+          # log is flaky (intermittent 502 Bad Gateway). The PyPI Trusted
+          # Publisher OIDC handshake itself does not require sigstore;
+          # attestations are a nice-to-have we can re-enable later.
+          attestations: false
 
   github-release:
     name: GitHub Release
