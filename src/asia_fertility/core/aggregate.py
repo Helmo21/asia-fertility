@@ -4,6 +4,7 @@ NOT mean-of-ratios — mean(tokens_i/words_i) is biased by Jensen's inequality.
 We sum tokens and words across the corpus, then divide. See afri-fertility
 and Petrov 2023 for the same convention.
 """
+
 from __future__ import annotations
 
 from .metrics import PerSentenceMetrics
@@ -19,9 +20,7 @@ def fertility_point(metrics: list[PerSentenceMetrics]) -> float:
     return total_tokens / total_words
 
 
-def premium_point(
-    target: list[PerSentenceMetrics], baseline: list[PerSentenceMetrics]
-) -> float:
+def premium_point(target: list[PerSentenceMetrics], baseline: list[PerSentenceMetrics]) -> float:
     return fertility_point(target) / fertility_point(baseline)
 
 

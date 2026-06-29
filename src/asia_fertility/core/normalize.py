@@ -1,4 +1,5 @@
 """Unicode NFC normalization."""
+
 from __future__ import annotations
 
 import unicodedata

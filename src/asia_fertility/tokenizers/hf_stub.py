@@ -3,6 +3,7 @@
 Used when `transformers` is not installed. Lets `list_tokenizers()` show the full
 registry even without the [hf] extra.
 """
+
 from __future__ import annotations
 
 from .base import Tokenizer, TokenizerInfo

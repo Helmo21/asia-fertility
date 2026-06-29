@@ -1,4 +1,5 @@
 """Study runner orchestrator."""
+
 from __future__ import annotations
 
 from .row import Row

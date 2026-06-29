@@ -1,4 +1,5 @@
 """StudyConfig — pydantic schema for the study runner."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -27,7 +28,7 @@ class StudyConfig(BaseModel):
     output_dir: str = "runs/{name}"
 
     @model_validator(mode="after")
-    def _validate_baseline(self) -> "StudyConfig":
+    def _validate_baseline(self) -> StudyConfig:
         if self.baseline_language not in self.languages:
             raise ValueError(
                 f"baseline_language '{self.baseline_language}' must appear in languages {self.languages}"
@@ -35,7 +36,7 @@ class StudyConfig(BaseModel):
         return self
 
     @classmethod
-    def from_yaml(cls, path: str | Path) -> "StudyConfig":
+    def from_yaml(cls, path: str | Path) -> StudyConfig:
         text = Path(path).read_text("utf-8")
         raw = yaml.safe_load(text)
         return cls.model_validate(raw)

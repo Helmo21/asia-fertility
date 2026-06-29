@@ -1,4 +1,5 @@
 """NIAH runner: walks the (model × lang × fill × position × trial) grid."""
+
 from __future__ import annotations
 
 import asyncio
@@ -6,7 +7,6 @@ import csv
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
@@ -35,7 +35,7 @@ class NIAHConfig(BaseModel):
     sizing_tokenizer: str = "openai/o200k_base"
 
     @classmethod
-    def from_yaml(cls, path: str | Path) -> "NIAHConfig":
+    def from_yaml(cls, path: str | Path) -> NIAHConfig:
         return cls.model_validate(yaml.safe_load(Path(path).read_text("utf-8")))
 
     def resolve_output_dir(self) -> Path:
@@ -85,13 +85,15 @@ def _load_completed(csv_path: Path) -> set[tuple]:
     done: set[tuple] = set()
     with csv_path.open("r", encoding="utf-8") as f:
         for row in csv.DictReader(f):
-            done.add((
-                row["model"],
-                row["iso"],
-                int(row["fill_tokens"]),
-                float(row["position_pct"]),
-                int(row["trial"]),
-            ))
+            done.add(
+                (
+                    row["model"],
+                    row["iso"],
+                    int(row["fill_tokens"]),
+                    float(row["position_pct"]),
+                    int(row["trial"]),
+                )
+            )
     return done
 
 
@@ -118,15 +120,31 @@ async def _run_one(
         )
     except Exception as e:
         return NIAHRow(
-            model=model, lang=language.name, iso=lang, script=language.script,
-            fill_tokens=fill, position_pct=position, trial=trial,
-            marker=marker, actual_tokens=0, marker_position_tokens=0,
-            response="", recalled=False, error=f"haystack: {e}",
+            model=model,
+            lang=language.name,
+            iso=lang,
+            script=language.script,
+            fill_tokens=fill,
+            position_pct=position,
+            trial=trial,
+            marker=marker,
+            actual_tokens=0,
+            marker_position_tokens=0,
+            response="",
+            recalled=False,
+            error=f"haystack: {e}",
         )
 
     messages = [
-        {"role": "system", "content": "Read the following text carefully. Recall any unusual marker phrases when asked."},
-        {"role": "user", "content": h.text + "\n\nWhat is the marker phrase in the text above? Respond with ONLY the marker phrase, nothing else."},
+        {
+            "role": "system",
+            "content": "Read the following text carefully. Recall any unusual marker phrases when asked.",
+        },
+        {
+            "role": "user",
+            "content": h.text
+            + "\n\nWhat is the marker phrase in the text above? Respond with ONLY the marker phrase, nothing else.",
+        },
     ]
     t0 = time.time()
     try:
@@ -138,11 +156,19 @@ async def _run_one(
     elapsed = time.time() - t0
 
     return NIAHRow(
-        model=model, lang=language.name, iso=lang, script=language.script,
-        fill_tokens=fill, position_pct=position, trial=trial,
-        marker=marker, actual_tokens=h.actual_tokens,
+        model=model,
+        lang=language.name,
+        iso=lang,
+        script=language.script,
+        fill_tokens=fill,
+        position_pct=position,
+        trial=trial,
+        marker=marker,
+        actual_tokens=h.actual_tokens,
         marker_position_tokens=h.marker_position_tokens,
-        response=response, recalled=recalled, error=err,
+        response=response,
+        recalled=recalled,
+        error=err,
         elapsed_seconds=elapsed,
     )
 
@@ -175,10 +201,19 @@ async def run_niah(cfg: NIAHConfig) -> Path:
                         key = (model, lang, fill, position, trial)
                         if key in completed:
                             continue
-                        tasks.append(_run_one(
-                            provider, cfg, model, lang, fill, position, trial,
-                            sentence_cache[lang], sizing_tok,
-                        ))
+                        tasks.append(
+                            _run_one(
+                                provider,
+                                cfg,
+                                model,
+                                lang,
+                                fill,
+                                position,
+                                trial,
+                                sentence_cache[lang],
+                                sizing_tok,
+                            )
+                        )
 
     completed_count = 0
     total = len(tasks)
@@ -188,7 +223,10 @@ async def run_niah(cfg: NIAHConfig) -> Path:
         f.flush()
         completed_count += 1
         if completed_count % 10 == 0 or completed_count == total:
-            print(f"  [{completed_count}/{total}] last: {row.iso}/{row.model} fill={row.fill_tokens} pos={row.position_pct} recall={row.recalled}", flush=True)
+            print(
+                f"  [{completed_count}/{total}] last: {row.iso}/{row.model} fill={row.fill_tokens} pos={row.position_pct} recall={row.recalled}",
+                flush=True,
+            )
 
     f.close()
     await provider.aclose()

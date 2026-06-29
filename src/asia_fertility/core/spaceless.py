@@ -1,10 +1,11 @@
 """Spaceless segmentation: Thai, Khmer, Burmese, Lao."""
+
 from __future__ import annotations
 
 import logging
 import re
+from collections.abc import Callable
 from functools import lru_cache
-from typing import Callable
 
 _log = logging.getLogger(__name__)
 
@@ -16,6 +17,7 @@ _LAO_RUN = re.compile(r"[\u0e80-\u0eff]+", re.UNICODE)
 
 def _has_library(name: str) -> bool:
     import importlib
+
     try:
         importlib.import_module(name)
         return True
@@ -27,6 +29,7 @@ def _has_library(name: str) -> bool:
 def _thai() -> Callable[[str], int]:
     if _has_library("pythainlp"):
         from pythainlp.tokenize import word_tokenize  # type: ignore
+
         return lambda t: sum(1 for w in word_tokenize(t, engine="newmm") if w.strip())
     _log.warning("pythainlp not installed; Thai uses regex fallback (less accurate)")
     return lambda t: len(_THAI_RUN.findall(t))
@@ -36,6 +39,7 @@ def _thai() -> Callable[[str], int]:
 def _khmer() -> Callable[[str], int]:
     if _has_library("khmernltk"):
         from khmernltk import word_tokenize  # type: ignore
+
         return lambda t: sum(1 for w in word_tokenize(t) if w.strip())
     return lambda t: len(_KHMER_RUN.findall(t))
 
@@ -49,6 +53,7 @@ def _burmese() -> Callable[[str], int]:
 def _lao() -> Callable[[str], int]:
     if _has_library("laonlp"):
         from laonlp.tokenize import word_tokenize  # type: ignore
+
         return lambda t: sum(1 for w in word_tokenize(t) if w.strip())
     return lambda t: len(_LAO_RUN.findall(t))
 

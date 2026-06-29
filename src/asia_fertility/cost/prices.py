@@ -1,4 +1,5 @@
 """Pinned prices YAML + loader. No silent fallback for explicit paths."""
+
 from __future__ import annotations
 
 import hashlib

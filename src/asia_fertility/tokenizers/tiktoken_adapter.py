@@ -1,4 +1,5 @@
 """tiktoken adapter — OpenAI o200k_base, o200k_harmony, cl100k_base."""
+
 from __future__ import annotations
 
 from .base import Tokenizer, TokenizerInfo
@@ -52,7 +53,9 @@ class TiktokenTokenizer:
         try:
             self._enc = tiktoken.get_encoding(encoding_name)
         except Exception as e:
-            raise TokenizerUnavailable(info.id, f"tiktoken encoding '{encoding_name}' unavailable: {e}") from e
+            raise TokenizerUnavailable(
+                info.id, f"tiktoken encoding '{encoding_name}' unavailable: {e}"
+            ) from e
 
     def encode(self, text: str) -> list[int]:
         return self._enc.encode(text)

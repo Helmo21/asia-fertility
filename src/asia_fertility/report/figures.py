@@ -1,4 +1,5 @@
 """All six paper figures, deterministic, 300dpi PNG + SVG."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -6,7 +7,7 @@ from pathlib import Path
 from asia_fertility import __version__
 
 from ._io import load_run
-from .palette import FAMILY_COLORS, SCRIPT_COLORS, SEQUENTIAL
+from .palette import SCRIPT_COLORS, SEQUENTIAL
 
 
 def _setup_mpl() -> None:
@@ -21,9 +22,13 @@ def _setup_mpl() -> None:
 def _footer(ax, manifest: dict) -> None:
     sha = (manifest.get("config_sha256") or "")[:7]
     ax.figure.text(
-        0.99, 0.005,
+        0.99,
+        0.005,
         f"asia-fertility v{__version__} · manifest {sha}",
-        ha="right", va="bottom", fontsize=6, alpha=0.5,
+        ha="right",
+        va="bottom",
+        fontsize=6,
+        alpha=0.5,
     )
 
 
@@ -69,7 +74,16 @@ def fig1_heatmap(run_dir: str | Path, out_dir: Path) -> tuple[Path, Path]:
     ]
     flat.sort(key=lambda x: -x[2])
     for i, j, v in flat[:5]:
-        ax.text(j, i, f"{v:.1f}×", ha="center", va="center", color="white", fontsize=8, fontweight="bold")
+        ax.text(
+            j,
+            i,
+            f"{v:.1f}×",
+            ha="center",
+            va="center",
+            color="white",
+            fontsize=8,
+            fontweight="bold",
+        )
 
     _footer(ax, manifest)
     return _save(fig, Path(out_dir), "fig1_heatmap")
@@ -88,15 +102,21 @@ def fig2_premium_by_script(run_dir: str | Path, out_dir: Path) -> tuple[Path, Pa
 
     fig, ax = plt.subplots(figsize=(10, 6))
     colors = [SCRIPT_COLORS.get(s, "#888") for s in df_sorted["script"]]
-    ax.bar(df_sorted["iso"], df_sorted["cost_ratio"], color=colors, edgecolor="white", linewidth=0.5)
+    ax.bar(
+        df_sorted["iso"], df_sorted["cost_ratio"], color=colors, edgecolor="white", linewidth=0.5
+    )
 
     # Error bars from CI
     yerr_low = (df_sorted["cost_ratio"] - df_sorted["cost_ratio_ci_low"]).clip(lower=0)
     yerr_high = (df_sorted["cost_ratio_ci_high"] - df_sorted["cost_ratio"]).clip(lower=0)
     ax.errorbar(
-        df_sorted["iso"], df_sorted["cost_ratio"],
+        df_sorted["iso"],
+        df_sorted["cost_ratio"],
         yerr=[yerr_low, yerr_high],
-        fmt="none", color="black", alpha=0.4, capsize=2,
+        fmt="none",
+        color="black",
+        alpha=0.4,
+        capsize=2,
     )
 
     ax.set_ylabel("Cost ratio (× English)", fontsize=11)
@@ -110,7 +130,9 @@ def fig2_premium_by_script(run_dir: str | Path, out_dir: Path) -> tuple[Path, Pa
     for script in df_sorted["script"]:
         if script not in seen_scripts:
             seen_scripts.add(script)
-            legend_handles.append(plt.Rectangle((0, 0), 1, 1, color=SCRIPT_COLORS.get(script, "#888"), label=script))
+            legend_handles.append(
+                plt.Rectangle((0, 0), 1, 1, color=SCRIPT_COLORS.get(script, "#888"), label=script)
+            )
     ax.legend(handles=legend_handles, title="Script", loc="upper right", fontsize=8)
 
     _footer(ax, manifest)
@@ -139,7 +161,13 @@ def fig3_cost(run_dir: str | Path, out_dir: Path) -> tuple[Path, Path]:
     ax.bar(df["iso"], df["monthly_usd"], color=colors, edgecolor="white", linewidth=0.5)
     baseline = df.loc[df["iso"] == "eng", "monthly_usd"]
     if len(baseline) > 0:
-        ax.axhline(baseline.values[0], color="black", linestyle="--", linewidth=1, label=f"English: ${baseline.values[0]:.0f}/mo")
+        ax.axhline(
+            baseline.values[0],
+            color="black",
+            linestyle="--",
+            linewidth=1,
+            label=f"English: ${baseline.values[0]:.0f}/mo",
+        )
     ax.set_ylabel("Estimated monthly cost (USD, 100k requests, GPT-4 Turbo input)")
     ax.set_xlabel("Language")
     ax.set_title("Monthly cost gap vs English (cl100k_base)", fontsize=13)
@@ -175,7 +203,9 @@ def fig4_context_exhaustion(run_dir: str | Path, out_dir: Path) -> tuple[Path, P
         crossings = np.where(cum >= window)[0]
         if len(crossings) > 0:
             t = crossings[0]
-            ax.scatter([t], [cum[t]], color=color, s=30, zorder=5, edgecolors="black", linewidths=0.5)
+            ax.scatter(
+                [t], [cum[t]], color=color, s=30, zorder=5, edgecolors="black", linewidths=0.5
+            )
 
     ax.axhline(y=window, color="black", linestyle="--", linewidth=1, label=f"{window}-token window")
     ax.set_xlabel("Turn (100 words/turn)")
@@ -211,7 +241,9 @@ def fig5_in_context_capacity(run_dir: str | Path, out_dir: Path) -> tuple[Path, 
     ax.bar(df["iso"], df["examples_fit"], color=colors, edgecolor="white", linewidth=0.5)
     ax.set_ylabel(f"Examples that fit in {window}-token window")
     ax.set_xlabel("Language")
-    ax.set_title(f"In-context capacity · cl100k_base · {words_per_example}-word examples", fontsize=13)
+    ax.set_title(
+        f"In-context capacity · cl100k_base · {words_per_example}-word examples", fontsize=13
+    )
     ax.tick_params(axis="x", rotation=45)
 
     for i, val in enumerate(df["examples_fit"]):
@@ -226,17 +258,26 @@ def fig6_premium_vs_recall(
 ) -> tuple[Path, Path]:
     """Scatter: cost ratio vs NIAH recall at long context."""
     _setup_mpl()
-    import matplotlib.pyplot as plt
     from pathlib import Path as P
+
+    import matplotlib.pyplot as plt
 
     df, manifest = load_run(run_dir)
     fig, ax = plt.subplots(figsize=(8, 6))
 
-    if niah_run_dir is None or not P(niah_run_dir).exists() or not (P(niah_run_dir) / "results.csv").exists():
+    if (
+        niah_run_dir is None
+        or not P(niah_run_dir).exists()
+        or not (P(niah_run_dir) / "results.csv").exists()
+    ):
         ax.text(
-            0.5, 0.5,
+            0.5,
+            0.5,
             "Figure 6 — NIAH data required.\n\nRun: asia-fertility niah run --config configs/niah_main.yaml\nThen re-run figures with --niah-run <output_dir>",
-            ha="center", va="center", fontsize=11, transform=ax.transAxes,
+            ha="center",
+            va="center",
+            fontsize=11,
+            transform=ax.transAxes,
             bbox=dict(boxstyle="round", facecolor="#FFEEEE", edgecolor="#CC0000"),
         )
         ax.set_axis_off()
@@ -247,7 +288,10 @@ def fig6_premium_vs_recall(
 
     niah_df = pd.read_csv(P(niah_run_dir) / "results.csv")
     recall = niah_df.groupby("iso")["recalled"].mean().to_dict()
-    df_ok = df[(df["skip_reason"].isna() | (df["skip_reason"] == "")) & (df["tokenizer"] == "openai/cl100k_base")]
+    df_ok = df[
+        (df["skip_reason"].isna() | (df["skip_reason"] == ""))
+        & (df["tokenizer"] == "openai/cl100k_base")
+    ]
 
     x, y, c, labels = [], [], [], []
     for _, row in df_ok.iterrows():

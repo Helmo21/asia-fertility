@@ -7,13 +7,15 @@ If the local cache is missing, attempts to auto-download from the official NLLB
 public release (no HF gating). Falls back to the HuggingFace `datasets` mirror
 if both fail.
 """
+
 from __future__ import annotations
 
 import os
 import tarfile
 import urllib.request
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterator, Literal
+from typing import Literal
 
 from asia_fertility.languages import get_language, load_languages
 
@@ -95,7 +97,9 @@ class FloresCorpus:
         a = list(self.iter_sentences(lang_a, limit))
         b = list(self.iter_sentences(lang_b, limit))
         if len(a) != len(b):
-            raise AssertionError(f"FLORES split misalignment: {lang_a}={len(a)} vs {lang_b}={len(b)}")
+            raise AssertionError(
+                f"FLORES split misalignment: {lang_a}={len(a)} vs {lang_b}={len(b)}"
+            )
         yield from zip(a, b, strict=True)
 
 

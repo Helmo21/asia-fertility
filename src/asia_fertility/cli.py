@@ -1,4 +1,5 @@
 """asia-fertility CLI entry point. Subcommand bodies are implemented in later tasks."""
+
 from __future__ import annotations
 
 import typer

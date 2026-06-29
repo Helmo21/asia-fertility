@@ -1,12 +1,12 @@
 """Manifest builder with SHA256 hashes for reproducibility."""
+
 from __future__ import annotations
 
 import hashlib
 import json
 import platform
 import sys
-from datetime import datetime, timezone
-from pathlib import Path
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from asia_fertility import __version__
@@ -27,12 +27,14 @@ def _tokenizer_versions(tokenizer_ids: list[str]) -> dict[str, str]:
         if tid.startswith("openai/"):
             try:
                 import tiktoken  # type: ignore
+
                 out[tid] = f"tiktoken=={tiktoken.__version__}"
             except ImportError:
                 out[tid] = "tiktoken=missing"
         elif tid.startswith("anthropic/"):
             try:
                 import anthropic  # type: ignore
+
                 out[tid] = f"anthropic=={anthropic.__version__}"
             except ImportError:
                 out[tid] = "anthropic=missing"
@@ -41,18 +43,19 @@ def _tokenizer_versions(tokenizer_ids: list[str]) -> dict[str, str]:
         else:
             try:
                 import transformers  # type: ignore
+
                 out[tid] = f"transformers=={transformers.__version__}"
             except ImportError:
                 out[tid] = "transformers=missing"
     return out
 
 
-def build_manifest(cfg: "StudyConfig", *, n_rows: int) -> dict:
+def build_manifest(cfg: StudyConfig, *, n_rows: int) -> dict:
     cfg_json = cfg.model_dump_json()
     return {
         "schema_version": "1.0",
         "package_version": __version__,
-        "run_started_at": datetime.now(timezone.utc).isoformat(),
+        "run_started_at": datetime.now(UTC).isoformat(),
         "config_sha256": _sha256_text(cfg_json),
         "config": json.loads(cfg_json),
         "prices_sha256": prices_sha256(),

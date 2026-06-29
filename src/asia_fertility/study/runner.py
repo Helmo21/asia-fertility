@@ -1,4 +1,5 @@
 """Study runner orchestrator."""
+
 from __future__ import annotations
 
 import logging
@@ -113,9 +114,7 @@ def _measure_cell(
         return replace(base_row, skip_reason="0 sentences for this language")
 
     try:
-        target_metrics = [
-            per_sentence(s, tok, segmenter=count_words) for s in sentences
-        ]
+        target_metrics = [per_sentence(s, tok, segmenter=count_words) for s in sentences]
     except NotImplementedError as e:
         # API count-only tokenizers raise on .encode() if invoked.
         return replace(base_row, skip_reason=f"tokenizer cannot encode: {e}")
@@ -177,9 +176,7 @@ def run_study(cfg: StudyConfig) -> StudyResult:
                 )
                 if not base_sents:
                     continue
-                base_pm = [
-                    per_sentence(s, tok, segmenter=count_words) for s in base_sents
-                ]
+                base_pm = [per_sentence(s, tok, segmenter=count_words) for s in base_sents]
                 baseline_cache[f"{corpus_name}:{tokenizer_id}"] = base_pm
             except (CorpusUnavailable, LanguageNotInCorpus, NotImplementedError):
                 continue
@@ -191,7 +188,10 @@ def run_study(cfg: StudyConfig) -> StudyResult:
         for lang in cfg.languages:
             for tokenizer_id in cfg.tokenizers:
                 row = _measure_cell(
-                    cfg, corpus_name, lang, tokenizer_id,
+                    cfg,
+                    corpus_name,
+                    lang,
+                    tokenizer_id,
                     baseline_metrics=baseline_cache,
                 )
                 rows.append(row)
@@ -201,8 +201,6 @@ def run_study(cfg: StudyConfig) -> StudyResult:
                     if row.skip_reason is None
                     else f"skip={row.skip_reason[:60]}"
                 )
-                _log.info(
-                    f"[{completed:4d}/{total}] {corpus_name} {lang} {tokenizer_id} {status}"
-                )
+                _log.info(f"[{completed:4d}/{total}] {corpus_name} {lang} {tokenizer_id} {status}")
 
     return StudyResult(config=cfg, rows=rows)

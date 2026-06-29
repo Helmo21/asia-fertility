@@ -4,6 +4,7 @@ Each script has 5 markers (one per position percentile). Markers are native to
 the script (avoiding the Latin-needle-in-non-Latin-haystack bias caveat) and
 designed to tokenize to ≥2 tokens to keep recall non-trivial.
 """
+
 from __future__ import annotations
 
 import logging
@@ -103,9 +104,7 @@ def get_marker(script: str, position_idx: int) -> str:
     if position_idx not in range(5):
         raise IndexError(f"position_idx must be 0..4, got {position_idx}")
     if script not in SCRIPT_MARKERS:
-        _log.warning(
-            f"No script-native markers for '{script}', falling back to Latin."
-        )
+        _log.warning(f"No script-native markers for '{script}', falling back to Latin.")
         return SCRIPT_MARKERS["Latn"][position_idx]
     return SCRIPT_MARKERS[script][position_idx]
 

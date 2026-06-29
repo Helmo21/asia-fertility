@@ -1,4 +1,5 @@
 """Fallback stub for API count-only tokenizers when [api] extra is not installed."""
+
 from __future__ import annotations
 
 from .base import Tokenizer, TokenizerInfo

@@ -1,4 +1,5 @@
 """16-language registry loaded from data/languages.yaml."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -9,9 +10,18 @@ from typing import Literal
 import yaml
 
 Script = Literal[
-    "Latn", "Thai", "Deva", "Beng", "Sinh",
-    "Taml", "Telu", "Knda", "Mlym",
-    "Mymr", "Khmr", "Laoo",
+    "Latn",
+    "Thai",
+    "Deva",
+    "Beng",
+    "Sinh",
+    "Taml",
+    "Telu",
+    "Knda",
+    "Mlym",
+    "Mymr",
+    "Khmr",
+    "Laoo",
 ]
 
 

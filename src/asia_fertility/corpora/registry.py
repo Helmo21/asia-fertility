@@ -1,7 +1,8 @@
 """Corpus registry."""
+
 from __future__ import annotations
 
-from typing import Callable
+from collections.abc import Callable
 
 from .base import ParallelCorpus
 from .exceptions import CorpusNotFound, CorpusUnavailable

@@ -3,6 +3,7 @@
 Gated repos (Llama, Gemma) require HF_TOKEN + license acceptance on huggingface.co.
 Ungated repos (Mistral, Qwen, DeepSeek, BLOOM, Aya) work without HF_TOKEN.
 """
+
 from __future__ import annotations
 
 import os
@@ -17,8 +18,20 @@ _HF_TOKENIZERS: list[tuple[str, str, str, bool, str]] = [
     ("mistral/tekken", "mistralai/Mistral-Nemo-Base-2407", "mistral", False, "Tekken tokenizer"),
     ("qwen/qwen3", "Qwen/Qwen2.5-7B", "qwen", False, "Qwen2.5 tokenizer (Qwen3 family)"),
     ("deepseek/v3", "deepseek-ai/DeepSeek-V2.5", "deepseek", False, ""),
-    ("bigscience/bloom", "bigscience/bloom-560m", "bigscience", False, "Multilingual baseline (BLOOM tokenizer)"),
-    ("cohere/aya-expanse", "CohereForAI/aya-expanse-8b", "cohere", True, "Multilingual-optimized baseline"),
+    (
+        "bigscience/bloom",
+        "bigscience/bloom-560m",
+        "bigscience",
+        False,
+        "Multilingual baseline (BLOOM tokenizer)",
+    ),
+    (
+        "cohere/aya-expanse",
+        "CohereForAI/aya-expanse-8b",
+        "cohere",
+        True,
+        "Multilingual-optimized baseline",
+    ),
     ("google/gemma-2", "google/gemma-2-9b", "google", True, "Gemma 2 (latest stable)"),
 ]
 
@@ -37,7 +50,13 @@ class HuggingFaceTokenizer:
             )
         except OSError as e:
             msg = str(e).lower()
-            if "401" in msg or "403" in msg or "gated" in msg or "access" in msg or "restricted" in msg:
+            if (
+                "401" in msg
+                or "403" in msg
+                or "gated" in msg
+                or "access" in msg
+                or "restricted" in msg
+            ):
                 raise TokenizerUnavailable(
                     info.id, "gated repo, HF_TOKEN missing or lacks license access"
                 ) from e

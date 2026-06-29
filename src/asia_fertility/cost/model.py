@@ -1,4 +1,5 @@
 """CostCalculator: token counts → multi-currency cost rows."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field, replace

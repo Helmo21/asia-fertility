@@ -1,4 +1,5 @@
 """NIAH recall scoring."""
+
 from __future__ import annotations
 
 import unicodedata

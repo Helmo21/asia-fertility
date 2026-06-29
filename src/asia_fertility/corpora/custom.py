@@ -1,10 +1,11 @@
 """Custom JSONL/CSV loader + bundled offline reference suite path."""
+
 from __future__ import annotations
 
 import csv
 import json
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterator
 
 from .base import Sentence
 from .exceptions import LanguageNotInCorpus

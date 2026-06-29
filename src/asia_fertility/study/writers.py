@@ -1,4 +1,5 @@
 """Output writers: parquet, csv, json, leaderboard, manifest."""
+
 from __future__ import annotations
 
 import csv
@@ -20,7 +21,7 @@ def _rows_to_dicts(rows: list) -> list[dict]:
     return out
 
 
-def write_csv(result: "StudyResult", path: Path) -> None:
+def write_csv(result: StudyResult, path: Path) -> None:
     rows = _rows_to_dicts(result.rows)
     if not rows:
         path.write_text("", encoding="utf-8")
@@ -39,16 +40,17 @@ def write_csv(result: "StudyResult", path: Path) -> None:
             w.writerow(row_out)
 
 
-def write_json(result: "StudyResult", path: Path) -> None:
+def write_json(result: StudyResult, path: Path) -> None:
     rows = _rows_to_dicts(result.rows)
     path.write_text(json.dumps(rows, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
-def write_parquet(result: "StudyResult", path: Path) -> None:
+def write_parquet(result: StudyResult, path: Path) -> None:
     try:
         import pandas as pd  # type: ignore
     except ImportError:
         import logging
+
         logging.getLogger(__name__).warning(
             "pyarrow/pandas not installed; skipping parquet. Install with pip install asia-fertility[viz]"
         )
@@ -71,7 +73,7 @@ def write_manifest(manifest: dict, path: Path) -> None:
     )
 
 
-def write_leaderboard_stub(result: "StudyResult", path: Path) -> None:
+def write_leaderboard_stub(result: StudyResult, path: Path) -> None:
     rows = _rows_to_dicts(result.rows)
     out = {"schema_version": "0.1", "languages": rows}
     path.write_text(json.dumps(out, indent=2, ensure_ascii=False), encoding="utf-8")

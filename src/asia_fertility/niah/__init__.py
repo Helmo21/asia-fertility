@@ -1,4 +1,5 @@
 """Multi-turn needle-in-haystack benchmark."""
+
 from __future__ import annotations
 
 from .haystack import Haystack, build_haystack
@@ -9,16 +10,16 @@ from .scoring import recall_score
 
 __all__ = [
     "SCRIPT_MARKERS",
-    "get_marker",
-    "supported_scripts",
-    "Haystack",
-    "build_haystack",
-    "OpenRouterProvider",
     "ChatError",
-    "RetryableError",
+    "Haystack",
     "NIAHConfig",
     "NIAHRow",
-    "run_niah",
+    "OpenRouterProvider",
+    "RetryableError",
+    "build_haystack",
     "estimate_cost_usd",
+    "get_marker",
     "recall_score",
+    "run_niah",
+    "supported_scripts",
 ]

@@ -1,4 +1,5 @@
 """Okabe-Ito 8-color palette (deuteranopia/protanopia safe)."""
+
 from __future__ import annotations
 
 OKABE_ITO = {

@@ -1,4 +1,5 @@
 """NIAH haystack builder with real-tokenizer sizing."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

@@ -1,4 +1,5 @@
 """Word segmentation per language."""
+
 from __future__ import annotations
 
 import logging
@@ -38,9 +39,18 @@ def _segment_icu(text: str, locale: str) -> int:
 
 
 _ICU_LOCALES = {
-    "eng": "en", "vie": "vi", "ind": "id", "zsm": "ms", "tgl": "tl",
-    "hin": "hi", "ben": "bn", "sin": "si",
-    "tam": "ta", "tel": "te", "kan": "kn", "mal": "ml",
+    "eng": "en",
+    "vie": "vi",
+    "ind": "id",
+    "zsm": "ms",
+    "tgl": "tl",
+    "hin": "hi",
+    "ben": "bn",
+    "sin": "si",
+    "tam": "ta",
+    "tel": "te",
+    "kan": "kn",
+    "mal": "ml",
 }
 
 
@@ -56,6 +66,7 @@ def count_words(text: str, lang: str) -> int:
 
     if language.spaceless:
         from .spaceless import segment_spaceless
+
         return segment_spaceless(text, lang)
 
     locale = _ICU_LOCALES.get(lang, "en")
@@ -65,6 +76,7 @@ def count_words(text: str, lang: str) -> int:
 def has_icu() -> bool:
     try:
         import icu  # type: ignore  # noqa: F401
+
         return True
     except ImportError:
         return False

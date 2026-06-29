@@ -1,4 +1,5 @@
 """Smoke tests for the CLI scaffolding."""
+
 from __future__ import annotations
 
 from typer.testing import CliRunner
@@ -18,7 +19,18 @@ def test_version_flag() -> None:
 def test_help_lists_subcommands() -> None:
     r = runner.invoke(app, ["--help"])
     assert r.exit_code == 0
-    for sub in ["measure", "cost", "run", "reproduce", "figures", "leaderboard", "tokenizers", "corpora", "languages", "niah"]:
+    for sub in [
+        "measure",
+        "cost",
+        "run",
+        "reproduce",
+        "figures",
+        "leaderboard",
+        "tokenizers",
+        "corpora",
+        "languages",
+        "niah",
+    ]:
         assert sub in r.stdout
 
 

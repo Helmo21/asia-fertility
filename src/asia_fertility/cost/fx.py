@@ -1,4 +1,5 @@
 """FX rate YAML + loader."""
+
 from __future__ import annotations
 
 import hashlib
@@ -25,8 +26,7 @@ class FXTable(BaseModel):
             raise ValueError(f"Only USD base supported; got base={self.base}")
         if target_currency not in self.rates:
             raise FXNotFound(
-                f"Currency '{target_currency}' not in FX snapshot. "
-                f"Available: {sorted(self.rates)}"
+                f"Currency '{target_currency}' not in FX snapshot. Available: {sorted(self.rates)}"
             )
         return amount_usd * self.rates[target_currency]
 

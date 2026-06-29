@@ -1,4 +1,5 @@
 """Aggregate metrics with bootstrap CIs."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

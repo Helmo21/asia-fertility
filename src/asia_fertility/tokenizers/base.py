@@ -1,4 +1,5 @@
 """Tokenizer protocol + TokenizerInfo dataclass."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -6,8 +7,16 @@ from typing import Literal, Protocol, runtime_checkable
 
 Backend = Literal["tiktoken", "hf", "api"]
 Family = Literal[
-    "openai", "meta", "google", "mistral", "qwen",
-    "deepseek", "bigscience", "cohere", "anthropic", "sarvam",
+    "openai",
+    "meta",
+    "google",
+    "mistral",
+    "qwen",
+    "deepseek",
+    "bigscience",
+    "cohere",
+    "anthropic",
+    "sarvam",
 ]
 
 
