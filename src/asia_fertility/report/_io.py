@@ -21,8 +21,5 @@ def load_run(run_dir: str | Path):
         raise FileNotFoundError(f"No results file in {run}")
 
     manifest_path = run / "manifest.json"
-    if manifest_path.exists():
-        manifest = json.loads(manifest_path.read_text("utf-8"))
-    else:
-        manifest = {}
+    manifest = json.loads(manifest_path.read_text("utf-8")) if manifest_path.exists() else {}
     return df, manifest

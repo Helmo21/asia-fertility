@@ -215,13 +215,11 @@ async def run_niah(cfg: NIAHConfig) -> Path:
                             )
                         )
 
-    completed_count = 0
     total = len(tasks)
-    for coro in asyncio.as_completed(tasks):
+    for completed_count, coro in enumerate(asyncio.as_completed(tasks), start=1):
         row = await coro
         writer.writerow(asdict(row))
         f.flush()
-        completed_count += 1
         if completed_count % 10 == 0 or completed_count == total:
             print(
                 f"  [{completed_count}/{total}] last: {row.iso}/{row.model} fill={row.fill_tokens} pos={row.position_pct} recall={row.recalled}",
