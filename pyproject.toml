@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "asia-fertility"
-version = "0.2.0"
+version = "0.2.1"
 description = "Tokenizer fertility, cost, and multi-turn context-budget analyzer for low-resource Asian languages."
 authors = [{ name = "Antoine Pedretti" }]
 license = { text = "MIT" }
