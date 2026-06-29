@@ -1,0 +1,17 @@
+name: main
+# 16 langs × 5 models × (3 warmup + 10 trials) = 1040 calls
+# Estimated cost ~$0.20, wall-clock ~35 min at concurrency=2.
+languages: [eng, vie, ind, zsm, tgl, tha, hin, ben, sin, tam, tel, kan, mal, mya, khm, lao]
+models:
+  - openai/gpt-4o-mini
+  - meta-llama/llama-3.1-8b-instruct
+  - google/gemini-2.5-flash
+  - qwen/qwen-2.5-7b-instruct
+  - deepseek/deepseek-v3
+corpus: flores
+n_warmup: 3
+n_trials: 10
+max_output_tokens: 200
+output_dir: runs/latency/main
+concurrency: 2     # deliberately low to keep TTFT measurements clean
+timeout: 120.0

@@ -1,0 +1,12 @@
+name: test
+# Smoke config: 2 langs × 1 model × (2 warmup + 3 trials) = 10 calls, ~$0.001
+languages: [eng, tam]
+models:
+  - openai/gpt-4o-mini
+corpus: flores
+n_warmup: 2
+n_trials: 3
+max_output_tokens: 100
+output_dir: runs/latency/test
+concurrency: 2
+timeout: 60.0
