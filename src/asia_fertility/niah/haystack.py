@@ -19,6 +19,15 @@ class Haystack:
     n_sentences_used: int
 
 
+def precompute_sentence_tokens(sentences: list[Sentence], tokenizer: Tokenizer) -> list[int]:
+    """Tokenize each sentence once; return a per-sentence token count list.
+
+    Building haystacks for many positions/trials reuses these counts, turning
+    the per-haystack fill loop from O(n²) into O(n) tokenization work.
+    """
+    return [tokenizer.count(s.text) for s in sentences]
+
+
 def _fill_to_tokens(
     sentences: list[Sentence],
     target: int,
@@ -26,20 +35,20 @@ def _fill_to_tokens(
     sep: str,
     *,
     start_idx: int,
+    sentence_token_counts: list[int] | None = None,
 ) -> tuple[str, int]:
-    parts: list[str] = []
-    n = 0
-    accum = 0
     if not sentences:
         return "", 0
+    counts = sentence_token_counts or precompute_sentence_tokens(sentences, tokenizer)
+    sep_overhead = 1 if sep else 0
+    parts: list[str] = []
+    accum = 0
+    n = 0
     idx = start_idx % len(sentences)
     while accum < target and n < 10000:
         parts.append(sentences[idx].text)
+        accum += counts[idx] + (sep_overhead if n > 0 else 0)
         n += 1
-        if n % 5 == 0 or n == 1:
-            accum = tokenizer.count(sep.join(parts))
-        else:
-            accum += tokenizer.count(sentences[idx].text) + 1
         idx = (idx + 1) % len(sentences)
     return sep.join(parts), n
 
@@ -52,6 +61,7 @@ def build_haystack(
     marker: str,
     position_pct: float,
     sentence_separator: str = " ",
+    sentence_token_counts: list[int] | None = None,
 ) -> Haystack:
     if not 0.0 < position_pct < 1.0:
         raise ValueError(f"position_pct must be in (0,1), got {position_pct}")

@@ -1,0 +1,23 @@
+name: v03
+# Expanded NIAH: 16 langs × 5 models × 5 fills × 5 positions × 2 trials = 4000 cells.
+# Estimated cost ~$35 on OpenRouter; wall-clock ~15-20 hours at concurrency=4.
+#
+# Context-window caveats (some cells will error 400 and be skipped):
+#   qwen-2.5-7b-instruct          : 32k window  → 64k + 128k fills error
+#   deepseek-chat-v3-0324         : 64k window  → 128k fills error
+#   gpt-4o-mini, llama-3.1-8b     : 128k window → all fills fit
+#   gemini-2.5-flash              : 1M window   → all fills fit
+languages: [eng, vie, ind, zsm, tgl, tha, hin, ben, sin, tam, tel, kan, mal, mya, khm, lao]
+models:
+  - openai/gpt-4o-mini
+  - meta-llama/llama-3.1-8b-instruct
+  - google/gemini-2.5-flash
+  - qwen/qwen-2.5-7b-instruct
+  - deepseek/deepseek-chat-v3-0324
+corpus: flores
+fill_targets: [4096, 16384, 32768, 65536, 131072]
+positions: [0.05, 0.25, 0.50, 0.75, 0.95]
+trials: 2
+output_dir: runs/niah/v03
+concurrency: 4
+sizing_tokenizer: openai/o200k_base

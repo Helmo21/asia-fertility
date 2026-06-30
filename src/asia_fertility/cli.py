@@ -251,6 +251,7 @@ def figures(
         fig4_context_exhaustion,
         fig5_in_context_capacity,
         fig6_premium_vs_recall,
+        fig6b_recall_heatmap,
         fig7_cost_vs_latency,
     )
 
@@ -262,11 +263,12 @@ def figures(
         ("fig4", lambda: fig4_context_exhaustion(run_dir, out)),
         ("fig5", lambda: fig5_in_context_capacity(run_dir, out)),
         ("fig6", lambda: fig6_premium_vs_recall(run_dir, out, niah_run)),
+        ("fig6b", lambda: fig6b_recall_heatmap(run_dir, out, niah_run)),
         ("fig7", lambda: fig7_cost_vs_latency(run_dir, out, latency_run)),
     ]:
         png, svg = fn()
         typer.echo(f"  ✓ {name}: {png.name}, {svg.name}")
-    typer.echo(f"All 6 figures written to {out}")
+    typer.echo(f"All figures written to {out}")
 
 
 @app.command()
@@ -413,8 +415,9 @@ def niah_run(
 
 @niah_app.command("report")
 def niah_report(output_dir: str = typer.Option(..., "--output-dir")) -> None:
-    """Print recall summary from an NIAH run."""
+    """Print recall summary and write niah_report.json from an NIAH run."""
     import csv as _csv
+    import json as _json
     from collections import defaultdict
     from pathlib import Path
 
@@ -423,10 +426,88 @@ def niah_report(output_dir: str = typer.Option(..., "--output-dir")) -> None:
 
     csv_path = Path(output_dir) / "results.csv"
     by_cell: dict[tuple, list[bool]] = defaultdict(list)
+    by_cell_err: dict[tuple, int] = defaultdict(int)
+    by_model: dict[str, list[bool]] = defaultdict(list)
+    by_model_lang: dict[tuple, list[bool]] = defaultdict(list)
+    by_model_fill: dict[tuple, list[bool]] = defaultdict(list)
+
     with csv_path.open("r", encoding="utf-8") as f:
         for row in _csv.DictReader(f):
-            key = (row["model"], row["iso"], int(row["fill_tokens"]))
-            by_cell[key].append(row["recalled"].lower() == "true")
+            # Defensive: skip rows whose CSV-parsing produced a non-conforming key
+            try:
+                model = row["model"]
+                iso = row["iso"]
+                fill = int(row["fill_tokens"])
+            except (KeyError, ValueError, TypeError):
+                continue
+            hit = row["recalled"].lower() == "true"
+            err = bool(row.get("error", "").strip())
+            key = (model, iso, fill)
+            by_cell[key].append(hit)
+            if err:
+                by_cell_err[key] += 1
+            by_model[model].append(hit)
+            by_model_lang[(model, iso)].append(hit)
+            by_model_fill[(model, fill)].append(hit)
+
+    # Per (model, iso, fill) detailed cells
+    cells = []
+    for (model, iso, fill), hits in sorted(by_cell.items()):
+        cells.append(
+            {
+                "model": model,
+                "iso": iso,
+                "fill_tokens": fill,
+                "n": len(hits),
+                "recalled": sum(hits),
+                "recall_rate": round(sum(hits) / len(hits), 4) if hits else None,
+                "errors": by_cell_err.get((model, iso, fill), 0),
+            }
+        )
+
+    # Per-model aggregates
+    per_model = []
+    for model in sorted(by_model):
+        hits = by_model[model]
+        per_model.append(
+            {
+                "model": model,
+                "n": len(hits),
+                "recalled": sum(hits),
+                "recall_rate": round(sum(hits) / len(hits), 4) if hits else None,
+            }
+        )
+
+    # Per (model, fill) for the heatmap
+    per_model_fill = []
+    for (model, fill), hits in sorted(by_model_fill.items()):
+        per_model_fill.append(
+            {
+                "model": model,
+                "fill_tokens": fill,
+                "n": len(hits),
+                "recalled": sum(hits),
+                "recall_rate": round(sum(hits) / len(hits), 4) if hits else None,
+            }
+        )
+
+    report = {
+        "source_csv": str(csv_path),
+        "n_cells": sum(len(v) for v in by_cell.values()),
+        "n_models": len(by_model),
+        "n_langs": len({k[1] for k in by_cell}),
+        "n_fills": len({k[2] for k in by_cell}),
+        "overall_recall_rate": round(
+            sum(sum(v) for v in by_cell.values()) / max(1, sum(len(v) for v in by_cell.values())),
+            4,
+        ),
+        "per_model": per_model,
+        "per_model_fill": per_model_fill,
+        "cells": cells,
+    }
+
+    json_path = Path(output_dir) / "niah_report.json"
+    json_path.write_text(_json.dumps(report, indent=2), encoding="utf-8")
 
     table = Table(title=f"NIAH recall · {csv_path}")
     table.add_column("Model", style="cyan")
@@ -436,6 +517,66 @@ def niah_report(output_dir: str = typer.Option(..., "--output-dir")) -> None:
     for (model, iso, fill), hits in sorted(by_cell.items()):
         rate = sum(hits) / len(hits)
         table.add_row(model, iso, str(fill), f"{rate:.2f} ({sum(hits)}/{len(hits)})")
+    Console().print(table)
+    Console().print(f"\n[bold]Wrote[/bold] {json_path}")
+
+
+@niah_app.command("lookup")
+def niah_lookup(
+    lang: str = typer.Option(..., "--lang", help="Language ISO code (e.g. tam, mya)."),
+    context: int = typer.Option(
+        ..., "--context", help="Context window in tokens (4096/16384/32768/65536/131072)."
+    ),
+    model: str | None = typer.Option(
+        None, "--model", help="Filter to one model (substring match on the OpenRouter id)."
+    ),
+) -> None:
+    """Query the bundled NIAH recall table for a (lang × context) deployment decision.
+
+    Uses the v0.3 dataset (16 langs × 5 models × 5 fills × 5 positions × 2 trials)
+    shipped under asia_fertility/_defaults/niah_recall_*.json. The lookup picks the
+    nearest fill_target ≤ context and returns recall_rate per model so you can
+    pick a vendor based on script-native retrieval at the depth you actually use.
+    """
+    import json as _json
+    from importlib.resources import files
+
+    from rich.console import Console
+    from rich.table import Table
+
+    data = _json.loads(
+        files("asia_fertility._defaults")
+        .joinpath("niah_recall_2026-06.json")
+        .read_text(encoding="utf-8")
+    )
+    fills = sorted(data["fills_tested"])
+    nearest = max((f for f in fills if f <= context), default=fills[0])
+    rows = [
+        c
+        for c in data["cells"]
+        if c["iso"] == lang
+        and c["fill_tokens"] == nearest
+        and (model is None or model in c["model"])
+    ]
+    if not rows:
+        typer.echo(
+            f"No data for lang={lang}, context≈{nearest} tokens. "
+            f"Available langs: {', '.join(data['languages'])}.",
+            err=True,
+        )
+        raise typer.Exit(code=1)
+    rows.sort(key=lambda r: -(r["recall_rate"] or 0))
+    table = Table(
+        title=f"NIAH recall · lang={lang} · context≤{context} (nearest fill = {nearest})  ·  source: {data['version']}"
+    )
+    table.add_column("Model", style="cyan")
+    table.add_column("Recall", justify="right")
+    table.add_column("n", justify="right")
+    table.add_column("Errors", justify="right")
+    for r in rows:
+        recall = r["recall_rate"]
+        cell = f"{recall:.0%} ({r['recalled']}/10)" if recall is not None else "—"
+        table.add_row(r["model"], cell, "10", str(r["errors"]))
     Console().print(table)
 
 

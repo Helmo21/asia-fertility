@@ -8,7 +8,7 @@
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](pyproject.toml)
 [![HF Dataset](https://img.shields.io/badge/HF-Helmo21%2Fasia--fertility-ffd21e)](https://huggingface.co/datasets/Helmo21/asia-fertility)
 
-`asia-fertility` measures the structural penalty that LLM tokenizers impose on lower-resource Asian languages. The same content can cost up to **11× more tokens in Burmese than in English** on a frontier tokenizer — silent inflation of API bills, smaller usable context windows, and fewer in-context examples.
+`asia-fertility` measures the structural penalty that LLM tokenizers impose on lower-resource Asian languages. The same content can cost up to **11.7× more tokens in Burmese than in English** on a frontier tokenizer — silent inflation of API bills, smaller usable context windows, and fewer in-context examples.
 
 ## Quickstart
 
@@ -45,15 +45,16 @@ asia-fertility latency report --output-dir runs/latency/main
 - **5 metrics** with 95% bootstrap CIs: fertility, premium, same-content cost ratio, characters/token (CPT), and **bytes/token (BPT)** — the only cross-script-fair comparator.
 - **Three benchmarks**:
   - **Leaderboard** — same-content cost ratio + BPT across 16 langs × 10 tokenizers on FLORES-200.
-  - **NIAH multi-turn recall** — script-native needle-in-haystack across frontier models on Tamil/Hindi/Burmese/Lao haystacks.
-  - **Wall-clock latency** — streaming-TTFT timing across 5 models × 16 languages with prefix-cache evasion.
+  - **NIAH multi-turn recall** — script-native needle-in-haystack across 5 frontier models × 16 languages × 5 fill levels (4k–131k) × 5 marker positions × 2 trials = **4 000 cells** on OpenRouter.
+  - **Wall-clock latency** — streaming-TTFT timing across 5 models × 16 languages × 10 trials (+3 warmup) = **800 measured trials** with prefix-cache evasion.
 
 ## Key findings
 
 - Same content costs **7–12× more tokens** on cl100k_base for Brahmic-derived scripts (Tamil 7.61×, Burmese 11.66×). Switching to `o200k_base` cuts the penalty 3–6×.
 - **Gemma-2 is the best open-weight tokenizer for South Asian** workloads (Tamil 2.58×, Burmese 4.80×). **BLOOM** dominates Indic scripts (Tamil 1.29×).
-- **NIAH recall collapses to 0–7%** on Hindi/Tamil/Burmese/Lao with script-native markers, even at 4 k context, across all frontier models tested. See paper §4.4.
-- **Cost is NOT a reliable proxy for UX impact**: Pearson r between cost ratio and latency ratio = **0.314**. The relationship is a property of the provider's serving stack (continuous batching, prefill parallelism), not of the language. See paper §4.5.
+- **NIAH recall is script-driven, not depth-driven**, on 4 of 5 frontier models (gpt-4o-mini, llama-3.1-8b, qwen-2.5-7b, deepseek-v3): non-Latin recall collapses to 0–2/10 already at 4 k context. The exception is **gemini-2.5-flash, which holds 76–96% recall across all 16 languages and all 5 fills (4k → 131k)** — so the collapse is a vendor-level training choice, not a fundamental limit. Pooled recall across the 4 000 cells: 36.2%. See paper §4.4.
+- **"Effective context window" is language-dependent**: deepseek-v3's nominal 128k window recalls cleanly at 131k on Latin scripts but errors with HTTP 400 on 100% of high-fertility Brahmic-script haystacks at the same notional size (Brahmic fertility blows the prompt past the model's window).
+- **Cost is NOT a reliable proxy for UX impact**: Pearson r between cost ratio and latency ratio = **0.314** pooled across 75 (model, lang) cells; per-model r ranges from −0.19 (qwen) to +0.74 (llama). The relationship is a property of the provider's serving stack (continuous batching, prefill parallelism), not of the language. See paper §4.5.
 
 ## Paper
 

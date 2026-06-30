@@ -256,20 +256,24 @@ def fig5_in_context_capacity(run_dir: str | Path, out_dir: Path) -> tuple[Path, 
 def fig6_premium_vs_recall(
     run_dir: str | Path, out_dir: Path, niah_run_dir: str | Path | None = None
 ) -> tuple[Path, Path]:
-    """Scatter: cost ratio vs NIAH recall at long context."""
+    """Scatter: cost ratio vs NIAH recall, one panel per model.
+
+    With v0.3 NIAH (5 models × 16 langs), per-model panels are required —
+    a pooled scatter hides the gemini-2.5-flash outlier finding.
+    """
     _setup_mpl()
     from pathlib import Path as P
 
     import matplotlib.pyplot as plt
 
     df, manifest = load_run(run_dir)
-    fig, ax = plt.subplots(figsize=(8, 6))
 
     if (
         niah_run_dir is None
         or not P(niah_run_dir).exists()
         or not (P(niah_run_dir) / "results.csv").exists()
     ):
+        fig, ax = plt.subplots(figsize=(8, 6))
         ax.text(
             0.5,
             0.5,
@@ -287,31 +291,159 @@ def fig6_premium_vs_recall(
     import pandas as pd
 
     niah_df = pd.read_csv(P(niah_run_dir) / "results.csv")
-    recall = niah_df.groupby("iso")["recalled"].mean().to_dict()
+    # Drop rows whose model column doesn't match the canonical model namespace.
+    niah_df = niah_df[niah_df["model"].astype(str).str.contains("/", na=False)]
+
     df_ok = df[
         (df["skip_reason"].isna() | (df["skip_reason"] == ""))
         & (df["tokenizer"] == "openai/cl100k_base")
     ]
+    cost_by_iso = df_ok.set_index("iso")["cost_ratio"].to_dict()
+    script_by_iso = df_ok.set_index("iso")["script"].to_dict()
 
-    x, y, c, labels = [], [], [], []
-    for _, row in df_ok.iterrows():
-        iso = row["iso"]
-        if iso in recall:
-            x.append(row["cost_ratio"])
-            y.append(recall[iso])
-            c.append(SCRIPT_COLORS.get(row["script"], "#888"))
-            labels.append(iso)
+    models = sorted(niah_df["model"].unique())
+    n = len(models)
+    ncols = min(3, n)
+    nrows = (n + ncols - 1) // ncols
+    fig, axes = plt.subplots(nrows, ncols, figsize=(5 * ncols, 4 * nrows), sharex=True, sharey=True)
+    axes = axes.flatten() if hasattr(axes, "flatten") else [axes]
 
-    ax.scatter(x, y, c=c, s=80, alpha=0.7, edgecolors="black", linewidths=0.5)
-    for xi, yi, lab in zip(x, y, labels):
-        ax.annotate(lab, (xi, yi), xytext=(5, 5), textcoords="offset points", fontsize=9)
-    ax.set_xlabel("Cost ratio (× English, cl100k_base)")
-    ax.set_ylabel("Recall (mean across positions × trials)")
-    ax.set_title("Cost vs NIAH recall", fontsize=13)
-    ax.set_xscale("log")
+    for ax, model in zip(axes, models):
+        sub = niah_df[niah_df["model"] == model]
+        recall_by_iso = sub.groupby("iso")["recalled"].apply(
+            lambda s: (s.astype(str).str.lower() == "true").mean()
+        )
+        x, y, c, labels = [], [], [], []
+        for iso, r in recall_by_iso.items():
+            if iso in cost_by_iso:
+                x.append(cost_by_iso[iso])
+                y.append(r)
+                c.append(SCRIPT_COLORS.get(script_by_iso.get(iso, ""), "#888"))
+                labels.append(iso)
+        ax.scatter(x, y, c=c, s=70, alpha=0.8, edgecolors="black", linewidths=0.5)
+        for xi, yi, lab in zip(x, y, labels):
+            ax.annotate(lab, (xi, yi), xytext=(4, 4), textcoords="offset points", fontsize=7)
+        ax.set_xscale("log")
+        ax.set_ylim(-0.05, 1.05)
+        ax.set_title(model.split("/")[-1], fontsize=10)
+        ax.grid(True, alpha=0.2)
 
-    _footer(ax, manifest)
+    # Hide unused axes
+    for ax in axes[n:]:
+        ax.set_visible(False)
+
+    # Shared labels
+    fig.supxlabel("Cost ratio (× English, cl100k_base, log scale)", fontsize=11)
+    fig.supylabel("NIAH recall (mean across fills × positions × trials)", fontsize=11)
+    fig.suptitle("Cost ratio vs script-native NIAH recall, per model (16 langs)", fontsize=13)
+    fig.tight_layout(rect=(0.02, 0.02, 1, 0.96))
+
+    _footer(axes[0], manifest)
     return _save(fig, Path(out_dir), "fig6_premium_vs_recall")
+
+
+def fig6b_recall_heatmap(
+    run_dir: str | Path, out_dir: Path, niah_run_dir: str | Path | None = None
+) -> tuple[Path, Path]:
+    """Per-(model, language) recall heatmap, averaged across fills and positions.
+
+    Reveals that the script-native collapse is concentrated on a specific
+    subset of (model, lang) cells, with gemini-2.5-flash as the clear exception.
+    """
+    _setup_mpl()
+    from pathlib import Path as P
+
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    _, manifest = load_run(run_dir)
+
+    if (
+        niah_run_dir is None
+        or not P(niah_run_dir).exists()
+        or not (P(niah_run_dir) / "results.csv").exists()
+    ):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.text(
+            0.5,
+            0.5,
+            "Figure 6b — NIAH data required.",
+            ha="center",
+            va="center",
+            fontsize=12,
+            transform=ax.transAxes,
+        )
+        ax.set_axis_off()
+        _footer(ax, manifest)
+        return _save(fig, Path(out_dir), "fig6b_recall_heatmap")
+
+    import pandas as pd
+
+    niah_df = pd.read_csv(P(niah_run_dir) / "results.csv")
+    niah_df = niah_df[niah_df["model"].astype(str).str.contains("/", na=False)]
+    niah_df["recalled_bool"] = niah_df["recalled"].astype(str).str.lower() == "true"
+
+    pivot = niah_df.pivot_table(
+        index="iso", columns="model", values="recalled_bool", aggfunc="mean"
+    )
+    # Sort languages so Latin-script langs cluster first
+    lang_order = [
+        "eng",
+        "vie",
+        "ind",
+        "zsm",
+        "tgl",
+        "tha",
+        "hin",
+        "ben",
+        "sin",
+        "tam",
+        "tel",
+        "kan",
+        "mal",
+        "mya",
+        "khm",
+        "lao",
+    ]
+    pivot = pivot.reindex([l for l in lang_order if l in pivot.index])
+    # Stable short-name model order
+    model_order_preferred = [
+        "google/gemini-2.5-flash",
+        "deepseek/deepseek-chat-v3-0324",
+        "openai/gpt-4o-mini",
+        "meta-llama/llama-3.1-8b-instruct",
+        "qwen/qwen-2.5-7b-instruct",
+    ]
+    cols = [m for m in model_order_preferred if m in pivot.columns]
+    cols += [m for m in pivot.columns if m not in cols]
+    pivot = pivot[cols]
+
+    fig, ax = plt.subplots(figsize=(2 + 1.2 * len(cols), 0.45 * len(pivot.index) + 1.5))
+    im = ax.imshow(pivot.values, aspect="auto", cmap="RdYlGn", vmin=0.0, vmax=1.0)
+    ax.set_xticks(range(len(pivot.columns)))
+    ax.set_xticklabels([c.split("/")[-1] for c in pivot.columns], rotation=20, ha="right")
+    ax.set_yticks(range(len(pivot.index)))
+    ax.set_yticklabels(pivot.index)
+    for i in range(pivot.shape[0]):
+        for j in range(pivot.shape[1]):
+            v = pivot.values[i, j]
+            if np.isnan(v):
+                continue
+            ax.text(
+                j,
+                i,
+                f"{v:.0%}",
+                ha="center",
+                va="center",
+                color="white" if v < 0.4 or v > 0.85 else "black",
+                fontsize=8,
+            )
+    plt.colorbar(im, ax=ax, label="Recall rate (averaged across fills × positions × trials)")
+    ax.set_title(
+        "Script-native NIAH recall by (model × language) · 16 langs × 5 models", fontsize=12
+    )
+    _footer(ax, manifest)
+    return _save(fig, Path(out_dir), "fig6b_recall_heatmap")
 
 
 def fig7_cost_vs_latency(

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import csv
 import time
 from dataclasses import asdict, dataclass
@@ -15,7 +16,7 @@ from asia_fertility.corpora import load_corpus
 from asia_fertility.languages import get_language
 from asia_fertility.tokenizers import get_tokenizer
 
-from .haystack import build_haystack
+from .haystack import build_haystack, precompute_sentence_tokens
 from .markers import get_marker
 from .providers import ChatError, OpenRouterProvider, RetryableError
 from .scoring import recall_score
@@ -107,6 +108,7 @@ async def _run_one(
     trial: int,
     sentences,
     sizing_tok,
+    sentence_token_counts: list[int] | None = None,
 ) -> NIAHRow:
     language = get_language(lang)
     marker = get_marker(language.script, cfg.positions.index(position))
@@ -117,6 +119,7 @@ async def _run_one(
             tokenizer=sizing_tok,
             marker=marker,
             position_pct=position,
+            sentence_token_counts=sentence_token_counts,
         )
     except Exception as e:
         return NIAHRow(
@@ -189,42 +192,73 @@ async def run_niah(cfg: NIAHConfig) -> Path:
     provider = OpenRouterProvider(max_concurrency=cfg.concurrency)
     corpus = load_corpus(cfg.corpus)
     sentence_cache: dict[str, list] = {}
+    counts_cache: dict[str, list[int]] = {}
 
-    tasks = []
+    cells: list[tuple] = []
     for model in cfg.models:
         for lang in cfg.languages:
             if lang not in sentence_cache:
                 sentence_cache[lang] = list(corpus.iter_sentences(lang, limit=2000))
+                counts_cache[lang] = precompute_sentence_tokens(sentence_cache[lang], sizing_tok)
             for fill in cfg.fill_targets:
                 for position in cfg.positions:
                     for trial in range(cfg.trials):
                         key = (model, lang, fill, position, trial)
                         if key in completed:
                             continue
-                        tasks.append(
-                            _run_one(
-                                provider,
-                                cfg,
-                                model,
-                                lang,
-                                fill,
-                                position,
-                                trial,
-                                sentence_cache[lang],
-                                sizing_tok,
-                            )
-                        )
+                        cells.append((model, lang, fill, position, trial))
 
-    total = len(tasks)
-    for completed_count, coro in enumerate(asyncio.as_completed(tasks), start=1):
-        row = await coro
-        writer.writerow(asdict(row))
-        f.flush()
-        if completed_count % 10 == 0 or completed_count == total:
-            print(
-                f"  [{completed_count}/{total}] last: {row.iso}/{row.model} fill={row.fill_tokens} pos={row.position_pct} recall={row.recalled}",
-                flush=True,
-            )
+    total = len(cells)
+    if total == 0:
+        f.close()
+        await provider.aclose()
+        return csv_path
+
+    # Bound in-flight tasks so we don't spawn thousands of coroutines whose
+    # synchronous haystack-build steps starve the event loop. We keep
+    # 4× concurrency in flight: enough to feed the provider semaphore and
+    # overlap haystack building with API calls, without exploding memory.
+    in_flight_cap = max(8, cfg.concurrency * 4)
+    cell_iter = iter(cells)
+    pending: set[asyncio.Task] = set()
+    completed_count = 0
+
+    def _spawn(cell):
+        model, lang, fill, position, trial = cell
+        coro = _run_one(
+            provider,
+            cfg,
+            model,
+            lang,
+            fill,
+            position,
+            trial,
+            sentence_cache[lang],
+            sizing_tok,
+            sentence_token_counts=counts_cache[lang],
+        )
+        return asyncio.create_task(coro)
+
+    for _ in range(min(in_flight_cap, total)):
+        try:
+            pending.add(_spawn(next(cell_iter)))
+        except StopIteration:
+            break
+
+    while pending:
+        done, pending = await asyncio.wait(pending, return_when=asyncio.FIRST_COMPLETED)
+        for finished in done:
+            row = finished.result()
+            writer.writerow(asdict(row))
+            f.flush()
+            completed_count += 1
+            if completed_count % 10 == 0 or completed_count == total:
+                print(
+                    f"  [{completed_count}/{total}] last: {row.iso}/{row.model} fill={row.fill_tokens} pos={row.position_pct} recall={row.recalled}",
+                    flush=True,
+                )
+            with contextlib.suppress(StopIteration):
+                pending.add(_spawn(next(cell_iter)))
 
     f.close()
     await provider.aclose()
