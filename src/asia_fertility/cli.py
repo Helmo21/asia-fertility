@@ -244,16 +244,76 @@ def run(
 
 
 @app.command()
-def reproduce(output_dir: str = typer.Option("runs/reproduce", "--output-dir")) -> None:
-    """Offline reference suite — one-command credibility demo."""
-    typer.echo(
-        "`reproduce` is reserved for the bundled reference suite (not yet shipped in 0.4.0)."
+def reproduce(
+    tokenizers_csv: str | None = typer.Option(
+        None,
+        "--tokenizers",
+        help="Comma-separated tokenizer IDs; defaults to all locally-available tokenizers.",
+    ),
+    json_out: bool = typer.Option(False, "--json"),
+) -> None:
+    """Offline reference suite — one-command credibility demo.
+
+    Runs the bundled 160-sentence parallel suite (10 sentences × 16 languages
+    from FLORES-200, shipped inside the wheel) against every locally available
+    tokenizer. No network, no API keys. Prints fertility + premium-vs-English.
+    """
+    from rich.console import Console
+    from rich.table import Table
+
+    from asia_fertility.study.reproduce import fertility_premiums, reproduce_suite
+
+    chosen = [t.strip() for t in tokenizers_csv.split(",") if t.strip()] if tokenizers_csv else None
+    rows = reproduce_suite(tokenizer_ids=chosen)
+    if not rows:
+        typer.echo(
+            "No tokenizers available locally. Install extras: pip install 'asia-fertility[oai,hf]'",
+            err=True,
+        )
+        raise typer.Exit(code=1)
+
+    summary = fertility_premiums(rows, baseline_lang="eng")
+
+    if json_out:
+        import json as _json
+
+        payload = [
+            {
+                "tokenizer": tok,
+                "lang": lang,
+                "fertility": fert,
+                "premium": prem,
+            }
+            for tok, lang, fert, prem in summary
+        ]
+        typer.echo(_json.dumps(payload, indent=2, ensure_ascii=False))
+        return
+
+    console = Console()
+    # Group by tokenizer
+    by_tok: dict[str, list[tuple[str, str, float | None, float | None]]] = {}
+    for tup in summary:
+        by_tok.setdefault(tup[0], []).append(tup)
+
+    for tok, items in by_tok.items():
+        items.sort(key=lambda r: -(r[3] or 0))
+        table = Table(
+            title=f"asia-fertility reproduce · {tok} (offline reference suite, 10 sents × 16 langs)",
+            title_style="bold",
+        )
+        table.add_column("Lang")
+        table.add_column("Fertility", justify="right")
+        table.add_column("Premium × eng", justify="right")
+        for _, lang, fert, prem in items:
+            fert_s = f"{fert:.3f}" if fert is not None else "—"
+            prem_s = f"{prem:.2f}×" if prem is not None else "—"
+            table.add_row(lang, fert_s, prem_s)
+        console.print(table)
+
+    console.print(
+        "\n[dim]No network, no API keys. For the full study use:[/dim]\n"
+        "  asia-fertility run --config configs/study_main.yaml"
     )
-    typer.echo("For a small smoke study use:")
-    typer.echo("  asia-fertility run --config configs/study_test.yaml")
-    typer.echo("For the full leaderboard use:")
-    typer.echo("  asia-fertility run --config configs/study_main.yaml")
-    raise typer.Exit(code=1)
 
 
 # ----------------------------- figures / leaderboard ---------------------- #
