@@ -1,0 +1,215 @@
+# Canonical model registry for asia-fertility v0.4.x.
+#
+# Single source of truth for: pricing, sizing tokenizer, native tokenizer,
+# benchmark coverage, and route IDs across providers. The bundled
+# prices_2026-06.yaml is the priceable view of this registry (only the
+# fields the cost subsystem needs). Future versions should derive
+# prices_*.yaml from this file automatically.
+#
+# Schema versioning: bump schema_version on breaking changes.
+# Snapshot dating: bump snapshot_date when any entry is added/changed.
+schema_version: "1.0"
+snapshot_date: 2026-06-30
+source_notes: "Built from OpenRouter listing + vendor pricing pages fetched
+  2026-06-30, aligned to model IDs that NIAH v0.3 and Latency v0.3 actually
+  ran on. Pre-existing curated entries kept as comparators."
+currency: USD
+unit: per_1M_tokens
+
+models:
+  # =====================================================================
+  # BENCHMARKED MODELS (NIAH v0.3 + Latency v0.3)
+  # These are the 5 models in the headline tables of the paper.
+  # =====================================================================
+  openai/gpt-4o-mini:
+    family: openai
+    pricing: {input: 0.15, output: 0.60}
+    context_window: 128000
+    sizing_tokenizer: openai/o200k_base
+    native_tokenizer: openai/o200k_base
+    routes:
+      openrouter: openai/gpt-4o-mini
+      native: gpt-4o-mini
+    benchmarked_in: [niah_v03, latency_main]
+    notes: "Reference baseline across all benchmarks."
+
+  google/gemini-2.5-flash:
+    family: google
+    pricing: {input: 0.30, output: 2.50}
+    context_window: 1000000
+    sizing_tokenizer: openai/o200k_base    # native google/gemini is API-only
+    native_tokenizer: google/gemini
+    routes:
+      openrouter: google/gemini-2.5-flash
+      native: gemini-2.5-flash
+    benchmarked_in: [niah_v03, latency_main]
+    notes: "Headline NIAH finding: 84.5% pooled recall across the 4000-cell grid; only
+      frontier model that retains script-native recall on Brahmic scripts at all
+      tested depths (see paper §4.4)."
+
+  meta-llama/llama-3.1-8b-instruct:
+    family: meta
+    pricing: {input: 0.06, output: 0.06}
+    context_window: 128000
+    sizing_tokenizer: openai/o200k_base
+    native_tokenizer: meta/llama-3.1
+    routes:
+      openrouter: meta-llama/llama-3.1-8b-instruct
+      native: null
+    benchmarked_in: [niah_v03, latency_main]
+    notes: "Effective context window appears to be <128k on OpenRouter (errors begin
+      at 32k fills despite nominal 128k spec)."
+
+  qwen/qwen-2.5-7b-instruct:
+    family: qwen
+    pricing: {input: 0.06, output: 0.18}
+    context_window: 32768
+    sizing_tokenizer: openai/o200k_base
+    native_tokenizer: qwen/qwen3
+    routes:
+      openrouter: qwen/qwen-2.5-7b-instruct
+      native: null
+    benchmarked_in: [niah_v03, latency_main]
+    notes: "Effective context window on OpenRouter is ~16k (errors begin at 16k
+      despite nominal 32k spec); see paper §4.4 Finding 3."
+
+  deepseek/deepseek-chat-v3-0324:
+    family: deepseek
+    pricing: {input: 0.27, output: 1.10}
+    context_window: 128000
+    sizing_tokenizer: openai/o200k_base
+    native_tokenizer: deepseek/v3
+    routes:
+      openrouter: deepseek/deepseek-chat-v3-0324
+      native: deepseek-chat
+    benchmarked_in: [niah_v03, latency_main]
+    notes: "Effective context window is language-dependent: holds at 131k for Latin
+      scripts but overflows on non-Latin haystacks because Brahmic fertility in the
+      native deepseek/v3 tokenizer exceeds o200k_base sizing (see §4.4 Finding 3)."
+
+  # =====================================================================
+  # CURATED COMPARATORS (not benchmarked in this release)
+  # Included so users can compare against models they might deploy.
+  # =====================================================================
+  openai/gpt-4o:
+    family: openai
+    pricing: {input: 2.50, output: 10.00}
+    context_window: 128000
+    sizing_tokenizer: openai/o200k_base
+    native_tokenizer: openai/o200k_base
+    routes: {openrouter: openai/gpt-4o, native: gpt-4o}
+    benchmarked_in: []
+
+  openai/gpt-4-turbo:
+    family: openai
+    pricing: {input: 10.00, output: 30.00}
+    context_window: 128000
+    sizing_tokenizer: openai/cl100k_base
+    native_tokenizer: openai/cl100k_base
+    routes: {openrouter: openai/gpt-4-turbo, native: gpt-4-turbo}
+    benchmarked_in: []
+
+  openai/gpt-3.5-turbo:
+    family: openai
+    pricing: {input: 0.50, output: 1.50}
+    context_window: 16385
+    sizing_tokenizer: openai/cl100k_base
+    native_tokenizer: openai/cl100k_base
+    routes: {openrouter: openai/gpt-3.5-turbo, native: gpt-3.5-turbo}
+    benchmarked_in: []
+
+  anthropic/claude-opus-4-7:
+    family: anthropic
+    pricing: {input: 15.00, output: 75.00}
+    context_window: 200000
+    sizing_tokenizer: openai/o200k_base    # anthropic/claude is API-only
+    native_tokenizer: anthropic/claude
+    routes: {openrouter: anthropic/claude-opus-4-7, native: claude-opus-4-7}
+    benchmarked_in: []
+
+  anthropic/claude-sonnet-4-6:
+    family: anthropic
+    pricing: {input: 3.00, output: 15.00}
+    context_window: 200000
+    sizing_tokenizer: openai/o200k_base
+    native_tokenizer: anthropic/claude
+    routes: {openrouter: anthropic/claude-sonnet-4-6, native: claude-sonnet-4-6}
+    benchmarked_in: []
+
+  anthropic/claude-haiku-4-5-20251001:
+    family: anthropic
+    pricing: {input: 1.00, output: 5.00}
+    context_window: 200000
+    sizing_tokenizer: openai/o200k_base
+    native_tokenizer: anthropic/claude
+    routes: {openrouter: anthropic/claude-haiku-4-5, native: claude-haiku-4-5-20251001}
+    benchmarked_in: []
+
+  google/gemini-2.5-pro:
+    family: google
+    pricing: {input: 1.25, output: 5.00}
+    context_window: 2000000
+    sizing_tokenizer: openai/o200k_base
+    native_tokenizer: google/gemini
+    routes: {openrouter: google/gemini-2.5-pro, native: gemini-2.5-pro}
+    benchmarked_in: []
+
+  google/gemma-2-27b:
+    family: google
+    pricing: {input: 0.40, output: 0.40}
+    context_window: 128000
+    sizing_tokenizer: google/gemma-2
+    native_tokenizer: google/gemma-2
+    routes: {openrouter: google/gemma-2-27b, native: null}
+    benchmarked_in: []
+
+  qwen/qwen3-72b-instruct:
+    family: qwen
+    pricing: {input: 0.60, output: 1.20}
+    context_window: 131072
+    sizing_tokenizer: qwen/qwen3
+    native_tokenizer: qwen/qwen3
+    routes: {openrouter: qwen/qwen3-72b-instruct, native: null}
+    benchmarked_in: []
+
+  mistral/mistral-large:
+    family: mistral
+    pricing: {input: 2.00, output: 6.00}
+    context_window: 131072
+    sizing_tokenizer: mistral/tekken
+    native_tokenizer: mistral/tekken
+    routes: {openrouter: mistral/mistral-large, native: null}
+    benchmarked_in: []
+
+  cohere/aya-expanse-8b:
+    family: cohere
+    pricing: {input: 0.30, output: 0.30}
+    context_window: 32768
+    sizing_tokenizer: cohere/aya-expanse
+    native_tokenizer: cohere/aya-expanse
+    routes: {openrouter: cohere/aya-expanse-8b, native: null}
+    benchmarked_in: []
+
+  # =====================================================================
+  # ID ALIASES (kept for backward-compatibility with v0.3.x clients).
+  # Same pricing as the canonical entry; resolve via alias_of.
+  # =====================================================================
+  meta/llama-3.1-8b-instruct:
+    family: meta
+    pricing: {input: 0.06, output: 0.06}
+    context_window: 128000
+    sizing_tokenizer: openai/o200k_base
+    native_tokenizer: meta/llama-3.1
+    routes: {openrouter: meta-llama/llama-3.1-8b-instruct, native: null}
+    benchmarked_in: []
+    alias_of: meta-llama/llama-3.1-8b-instruct
+
+  deepseek/deepseek-v3:
+    family: deepseek
+    pricing: {input: 0.27, output: 1.10}
+    context_window: 128000
+    sizing_tokenizer: openai/o200k_base
+    native_tokenizer: deepseek/v3
+    routes: {openrouter: deepseek/deepseek-chat-v3-0324, native: null}
+    benchmarked_in: []
+    alias_of: deepseek/deepseek-chat-v3-0324

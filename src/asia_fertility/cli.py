@@ -18,12 +18,16 @@ app = typer.Typer(
 tokenizers_app = typer.Typer(help="Tokenizer registry commands.")
 corpora_app = typer.Typer(help="Corpus registry commands.")
 languages_app = typer.Typer(help="Language registry commands.")
+models_app = typer.Typer(
+    help="Canonical model registry (pricing + tokenizer + benchmark coverage)."
+)
 niah_app = typer.Typer(help="Multi-turn needle-in-haystack benchmark commands.")
 latency_app = typer.Typer(help="Wall-clock latency benchmark commands.")
 
 app.add_typer(tokenizers_app, name="tokenizers")
 app.add_typer(corpora_app, name="corpora")
 app.add_typer(languages_app, name="languages")
+app.add_typer(models_app, name="models")
 app.add_typer(niah_app, name="niah")
 app.add_typer(latency_app, name="latency")
 
@@ -135,17 +139,35 @@ def cost(
 ) -> None:
     """Cost per model per language for a representative input."""
     from asia_fertility.cost import cost_of
+    from asia_fertility.cost.prices import ModelNotInPrices, load_prices
 
     model_list = [m.strip() for m in models.split(",") if m.strip()]
     cur_list = [c.strip() for c in currencies.split(",") if c.strip()]
-    rows = cost_of(
-        text,
-        models=model_list,
-        output_tokens_est=output_tokens_est,
-        currencies=cur_list,
-        prices_path=prices_path,
-        fx_path=fx_path,
-    )
+    try:
+        rows = cost_of(
+            text,
+            models=model_list,
+            output_tokens_est=output_tokens_est,
+            currencies=cur_list,
+            prices_path=prices_path,
+            fx_path=fx_path,
+        )
+    except ModelNotInPrices as e:
+        from asia_fertility.registry import load_registry
+
+        # Pull the failing id out of the error message (everything in quotes)
+        msg = str(e)
+        bad_id = msg.split("'")[1] if "'" in msg else ""
+        suggestions = load_registry().suggest(bad_id, n=3) if bad_id else []
+        known = sorted(load_prices(prices_path).models.keys())
+        out = [str(e)]
+        if suggestions:
+            out.append(f"\nDid you mean: {', '.join(suggestions)} ?")
+        out.append(f"\nBundled prices cover {len(known)} model IDs:")
+        out.append("  " + "\n  ".join(known))
+        out.append("\nPass --prices PATH to supply a custom YAML for other models.")
+        typer.echo("\n".join(out), err=True)
+        raise typer.Exit(code=2) from None
 
     if json_out:
         import dataclasses
@@ -224,10 +246,13 @@ def run(
 @app.command()
 def reproduce(output_dir: str = typer.Option("runs/reproduce", "--output-dir")) -> None:
     """Offline reference suite — one-command credibility demo."""
-    typer.echo("`reproduce` is wired to the bundled reference suite, which is not shipped in v0.2.")
     typer.echo(
-        "Run `asia-fertility run --config configs/study_test.yaml` for a small smoke study instead."
+        "`reproduce` is reserved for the bundled reference suite (not yet shipped in 0.4.0)."
     )
+    typer.echo("For a small smoke study use:")
+    typer.echo("  asia-fertility run --config configs/study_test.yaml")
+    typer.echo("For the full leaderboard use:")
+    typer.echo("  asia-fertility run --config configs/study_main.yaml")
     raise typer.Exit(code=1)
 
 
@@ -377,6 +402,117 @@ def languages_list() -> None:
     for lg in langs:
         spaceless = "[yellow]✓[/yellow]" if lg.spaceless else ""
         table.add_row(lg.iso, lg.name, lg.script, lg.family, lg.flores_tag, spaceless, lg.notes)
+    Console().print(table)
+
+
+# ----------------------------- models ------------------------------------- #
+
+
+@models_app.command("list")
+def models_list(
+    benchmarked_only: bool = typer.Option(
+        False, "--benchmarked-only", help="Only show models with non-empty benchmarked_in."
+    ),
+    family: str | None = typer.Option(None, "--family", help="Filter by vendor family."),
+    json_out: bool = typer.Option(False, "--json"),
+) -> None:
+    """List entries from the canonical model registry (models_<snapshot>.yaml)."""
+    from asia_fertility.registry import load_registry
+
+    reg = load_registry()
+    rows = reg.all(include_aliases=False)
+    if benchmarked_only:
+        rows = [r for r in rows if r.benchmarked_in]
+    if family:
+        rows = [r for r in rows if r.family == family]
+
+    if json_out:
+        import json as _json
+
+        payload = {
+            "schema_version": reg.schema_version,
+            "snapshot_date": str(reg.snapshot_date),
+            "models": [
+                {
+                    "id": r.id,
+                    "family": r.family,
+                    "pricing": {"input": r.input_price_per_1m, "output": r.output_price_per_1m},
+                    "context_window": r.context_window,
+                    "sizing_tokenizer": r.sizing_tokenizer,
+                    "native_tokenizer": r.native_tokenizer,
+                    "benchmarked_in": list(r.benchmarked_in),
+                }
+                for r in rows
+            ],
+        }
+        typer.echo(_json.dumps(payload, indent=2, ensure_ascii=False))
+        return
+
+    from rich.console import Console
+    from rich.table import Table
+
+    table = Table(
+        title=f"Model registry · snapshot {reg.snapshot_date} · {len(rows)} entries",
+        title_style="bold",
+    )
+    table.add_column("Model ID", style="cyan")
+    table.add_column("Family", style="dim")
+    table.add_column("In $/1M", justify="right")
+    table.add_column("Out $/1M", justify="right")
+    table.add_column("Window", justify="right")
+    table.add_column("Sizing tok", overflow="fold")
+    table.add_column("Benchmarked", overflow="fold")
+    for r in rows:
+        bench = ",".join(r.benchmarked_in) if r.benchmarked_in else "[dim]—[/dim]"
+        table.add_row(
+            r.id,
+            r.family,
+            f"${r.input_price_per_1m:.2f}",
+            f"${r.output_price_per_1m:.2f}",
+            f"{r.context_window:,}",
+            r.sizing_tokenizer,
+            bench,
+        )
+    Console().print(table)
+
+
+@models_app.command("show")
+def models_show(model_id: str = typer.Argument(..., help="Model ID to look up.")) -> None:
+    """Show full registry detail for one model, resolving aliases."""
+    from asia_fertility.registry import load_registry
+
+    reg = load_registry()
+    if not reg.has(model_id):
+        suggestions = reg.suggest(model_id, n=3)
+        msg = f"Unknown model '{model_id}'."
+        if suggestions:
+            msg += f"\nDid you mean: {', '.join(suggestions)} ?"
+        typer.echo(msg, err=True)
+        raise typer.Exit(code=2)
+    raw = reg.models[model_id]
+    rec = reg.get(model_id)  # resolves alias
+    from rich.console import Console
+    from rich.table import Table
+
+    note = ""
+    if raw.alias_of:
+        note = f"[dim](alias of {raw.alias_of})[/dim]"
+    table = Table(title=f"Model · {model_id} {note}", title_style="bold")
+    table.add_column("Field")
+    table.add_column("Value", overflow="fold")
+    table.add_row("Family", rec.family)
+    table.add_row("Input price / 1M tokens", f"${rec.input_price_per_1m:.4f} {reg.currency}")
+    table.add_row("Output price / 1M tokens", f"${rec.output_price_per_1m:.4f} {reg.currency}")
+    table.add_row("Context window", f"{rec.context_window:,} tokens")
+    table.add_row("Sizing tokenizer", rec.sizing_tokenizer)
+    table.add_row("Native tokenizer", rec.native_tokenizer)
+    table.add_row("OpenRouter route", rec.openrouter_route or "[dim]—[/dim]")
+    table.add_row("Native API route", rec.native_route or "[dim]—[/dim]")
+    table.add_row(
+        "Benchmarked in", ", ".join(rec.benchmarked_in) if rec.benchmarked_in else "[dim]—[/dim]"
+    )
+    if rec.notes:
+        table.add_row("Notes", rec.notes)
     Console().print(table)
 
 
@@ -530,6 +666,11 @@ def niah_lookup(
     model: str | None = typer.Option(
         None, "--model", help="Filter to one model (substring match on the OpenRouter id)."
     ),
+    with_cost: bool = typer.Option(
+        False,
+        "--with-cost",
+        help="Join with the model registry to add per-1M input + output prices.",
+    ),
 ) -> None:
     """Query the bundled NIAH recall table for a (lang × context) deployment decision.
 
@@ -537,6 +678,7 @@ def niah_lookup(
     shipped under asia_fertility/_defaults/niah_recall_*.json. The lookup picks the
     nearest fill_target ≤ context and returns recall_rate per model so you can
     pick a vendor based on script-native retrieval at the depth you actually use.
+    With --with-cost, joins to the model registry to add pricing.
     """
     import json as _json
     from importlib.resources import files
@@ -566,18 +708,49 @@ def niah_lookup(
         )
         raise typer.Exit(code=1)
     rows.sort(key=lambda r: -(r["recall_rate"] or 0))
-    table = Table(
-        title=f"NIAH recall · lang={lang} · context≤{context} (nearest fill = {nearest})  ·  source: {data['version']}"
+
+    reg = None
+    if with_cost:
+        from asia_fertility.registry import load_registry
+
+        reg = load_registry()
+
+    title = (
+        f"NIAH recall · lang={lang} · context≤{context} "
+        f"(nearest fill = {nearest})  ·  source: {data['version']}"
     )
+    table = Table(title=title)
     table.add_column("Model", style="cyan")
     table.add_column("Recall", justify="right")
     table.add_column("n", justify="right")
     table.add_column("Errors", justify="right")
+    if with_cost:
+        table.add_column("In $/1M", justify="right")
+        table.add_column("Out $/1M", justify="right")
+        table.add_column("Approx cost (this prompt)", justify="right")
     for r in rows:
         recall = r["recall_rate"]
         cell = f"{recall:.0%} ({r['recalled']}/10)" if recall is not None else "—"
-        table.add_row(r["model"], cell, "10", str(r["errors"]))
+        line = [r["model"], cell, "10", str(r["errors"])]
+        if with_cost and reg is not None:
+            try:
+                rec = reg.get(r["model"])
+                in_p = f"${rec.input_price_per_1m:.2f}"
+                out_p = f"${rec.output_price_per_1m:.2f}"
+                # Approximate cost of one prompt at this fill (input only) + 100 tokens output
+                input_cost = nearest * rec.input_price_per_1m / 1_000_000
+                output_cost = 100 * rec.output_price_per_1m / 1_000_000
+                approx = f"${input_cost + output_cost:.6f}"
+            except KeyError:
+                in_p = out_p = approx = "[dim]—[/dim]"
+            line += [in_p, out_p, approx]
+        table.add_row(*line)
     Console().print(table)
+    if with_cost:
+        Console().print(
+            f"  [dim]Approx cost = {nearest:,} input tokens × in-price + "
+            f"100 output tokens × out-price, per the model registry.[/dim]"
+        )
 
 
 # ----------------------------- latency ------------------------------------ #

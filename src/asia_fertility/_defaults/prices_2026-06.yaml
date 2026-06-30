@@ -1,19 +1,50 @@
 schema_version: "1.0"
-snapshot_date: 2026-06-28
-source_notes: "Vendor pricing pages + OpenRouter list, fetched 2026-06-28."
+snapshot_date: 2026-06-30
+source_notes: "Vendor pricing pages + OpenRouter listing, fetched 2026-06-30.
+  Aligned to NIAH v0.3 + Latency v0.3 benchmark model IDs so every benchmarked
+  model is priceable from the bundled default. Pre-existing curated entries
+  retained for cost comparisons against models we did not benchmark.
+  See models_2026-06.yaml for the canonical model registry (benchmark coverage,
+  routes, tokenizer pairings)."
 currency: USD
 unit: per_1M_tokens
 models:
-  openai/gpt-4o:
-    tokenizer: openai/o200k_base
-    input: 2.50
-    output: 10.00
-    context_window: 128000
-    hosted: openai
+  # ---------- Benchmark-aligned IDs (NIAH v0.3 + Latency v0.3) ----------
   openai/gpt-4o-mini:
     tokenizer: openai/o200k_base
     input: 0.15
     output: 0.60
+    context_window: 128000
+    hosted: openai
+  google/gemini-2.5-flash:
+    tokenizer: openai/o200k_base  # sizing fallback; native google/gemini is API-only
+    input: 0.30
+    output: 2.50
+    context_window: 1000000
+    hosted: openrouter
+  meta-llama/llama-3.1-8b-instruct:
+    tokenizer: meta/llama-3.1
+    input: 0.06
+    output: 0.06
+    context_window: 128000
+    hosted: openrouter
+  qwen/qwen-2.5-7b-instruct:
+    tokenizer: qwen/qwen3
+    input: 0.06
+    output: 0.18
+    context_window: 32768
+    hosted: openrouter
+  deepseek/deepseek-chat-v3-0324:
+    tokenizer: deepseek/v3
+    input: 0.27
+    output: 1.10
+    context_window: 128000
+    hosted: openrouter
+  # ---------- Curated comparators (not benchmarked here) ----------
+  openai/gpt-4o:
+    tokenizer: openai/o200k_base
+    input: 2.50
+    output: 10.00
     context_window: 128000
     hosted: openai
   openai/gpt-4-turbo:
@@ -29,29 +60,29 @@ models:
     context_window: 16385
     hosted: openai
   anthropic/claude-opus-4-7:
-    tokenizer: anthropic/claude
+    tokenizer: openai/o200k_base  # sizing fallback; native anthropic/claude is API-only
     input: 15.00
     output: 75.00
     context_window: 200000
     hosted: anthropic
   anthropic/claude-sonnet-4-6:
-    tokenizer: anthropic/claude
+    tokenizer: openai/o200k_base  # sizing fallback; native anthropic/claude is API-only
     input: 3.00
     output: 15.00
     context_window: 200000
     hosted: anthropic
+  anthropic/claude-haiku-4-5-20251001:
+    tokenizer: openai/o200k_base  # sizing fallback; native anthropic/claude is API-only
+    input: 1.00
+    output: 5.00
+    context_window: 200000
+    hosted: anthropic
   google/gemini-2.5-pro:
-    tokenizer: google/gemini
+    tokenizer: openai/o200k_base  # sizing fallback; native google/gemini is API-only
     input: 1.25
     output: 5.00
     context_window: 2000000
     hosted: google
-  meta/llama-3.1-8b-instruct:
-    tokenizer: meta/llama-3.1
-    input: 0.20
-    output: 0.20
-    context_window: 131072
-    hosted: openrouter
   google/gemma-2-27b:
     tokenizer: google/gemma-2
     input: 0.40
@@ -61,12 +92,6 @@ models:
   qwen/qwen3-72b-instruct:
     tokenizer: qwen/qwen3
     input: 0.60
-    output: 1.20
-    context_window: 131072
-    hosted: openrouter
-  deepseek/deepseek-v3:
-    tokenizer: deepseek/v3
-    input: 0.30
     output: 1.20
     context_window: 131072
     hosted: openrouter
@@ -81,4 +106,17 @@ models:
     input: 0.30
     output: 0.30
     context_window: 32768
+    hosted: openrouter
+  # ---------- Legacy / pre-rename ID aliases (kept for backward compat) ----------
+  meta/llama-3.1-8b-instruct:
+    tokenizer: meta/llama-3.1
+    input: 0.06
+    output: 0.06
+    context_window: 128000
+    hosted: openrouter
+  deepseek/deepseek-v3:
+    tokenizer: deepseek/v3
+    input: 0.27
+    output: 1.10
+    context_window: 128000
     hosted: openrouter

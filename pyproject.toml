@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "asia-fertility"
-version = "0.3.1"
+version = "0.4.0"
 description = "Tokenizer fertility, cost, and multi-turn context-budget analyzer for low-resource Asian languages."
 authors = [{ name = "Antoine Pedretti" }]
 license = { text = "MIT" }
@@ -76,6 +76,7 @@ packages = ["src/asia_fertility"]
 "src/asia_fertility/_defaults/prices_2026-06.yaml" = "asia_fertility/_defaults/prices_2026-06.yaml"
 "src/asia_fertility/_defaults/fx_2026-06.yaml" = "asia_fertility/_defaults/fx_2026-06.yaml"
 "src/asia_fertility/_defaults/niah_recall_2026-06.json" = "asia_fertility/_defaults/niah_recall_2026-06.json"
+"src/asia_fertility/_defaults/models_2026-06.yaml" = "asia_fertility/_defaults/models_2026-06.yaml"
 
 [tool.hatch.build.targets.sdist]
 include = ["src/asia_fertility", "configs", "tests", "README.md", "LICENSE"]
@@ -86,6 +87,7 @@ include = ["src/asia_fertility", "configs", "tests", "README.md", "LICENSE"]
 "src/asia_fertility/_defaults/prices_2026-06.yaml" = "src/asia_fertility/_defaults/prices_2026-06.yaml"
 "src/asia_fertility/_defaults/fx_2026-06.yaml" = "src/asia_fertility/_defaults/fx_2026-06.yaml"
 "src/asia_fertility/_defaults/niah_recall_2026-06.json" = "src/asia_fertility/_defaults/niah_recall_2026-06.json"
+"src/asia_fertility/_defaults/models_2026-06.yaml" = "src/asia_fertility/_defaults/models_2026-06.yaml"
 
 [tool.ruff]
 line-length = 100
