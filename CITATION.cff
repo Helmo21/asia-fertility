@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+title: "asia-fertility: Quantifying the Cost, Context, and Recall Penalty of Tokenizing Lower-Resource Asian Languages"
+message: "If you use this software, please cite the paper and the software."
+type: software
+authors:
+  - family-names: Pedretti
+    given-names: Antoine
+    orcid: "https://orcid.org/0000-0000-0000-0000"
+repository-code: "https://github.com/Helmo21/asia-fertility"
+url: "https://fertiscope.vercel.app"
+license: MIT
+version: "0.4.0"
+date-released: 2026-06-30
+keywords:
+  - tokenizer
+  - fertility
+  - multilingual
+  - low-resource
+  - asian-languages
+  - benchmark
+  - leaderboard
+  - llm
+preferred-citation:
+  type: article
+  title: "The Asian Language Tax: Quantifying the Cost, Context, and Recall Penalty of Tokenizing Lower-Resource Asian Languages in Frontier LLMs"
+  authors:
+    - family-names: Pedretti
+      given-names: Antoine
+  year: 2026
+  url: "https://github.com/Helmo21/asia-fertility/blob/main/paper/paper.pdf"

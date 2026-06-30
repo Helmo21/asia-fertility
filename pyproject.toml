@@ -77,6 +77,7 @@ packages = ["src/asia_fertility"]
 "src/asia_fertility/_defaults/fx_2026-06.yaml" = "asia_fertility/_defaults/fx_2026-06.yaml"
 "src/asia_fertility/_defaults/niah_recall_2026-06.json" = "asia_fertility/_defaults/niah_recall_2026-06.json"
 "src/asia_fertility/_defaults/models_2026-06.yaml" = "asia_fertility/_defaults/models_2026-06.yaml"
+"src/asia_fertility/_defaults/reference_suite/reference.jsonl" = "asia_fertility/_defaults/reference_suite/reference.jsonl"
 
 [tool.hatch.build.targets.sdist]
 include = ["src/asia_fertility", "configs", "tests", "README.md", "LICENSE"]
@@ -88,6 +89,7 @@ include = ["src/asia_fertility", "configs", "tests", "README.md", "LICENSE"]
 "src/asia_fertility/_defaults/fx_2026-06.yaml" = "src/asia_fertility/_defaults/fx_2026-06.yaml"
 "src/asia_fertility/_defaults/niah_recall_2026-06.json" = "src/asia_fertility/_defaults/niah_recall_2026-06.json"
 "src/asia_fertility/_defaults/models_2026-06.yaml" = "src/asia_fertility/_defaults/models_2026-06.yaml"
+"src/asia_fertility/_defaults/reference_suite/reference.jsonl" = "src/asia_fertility/_defaults/reference_suite/reference.jsonl"
 
 [tool.ruff]
 line-length = 100
