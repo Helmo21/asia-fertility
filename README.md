@@ -3,7 +3,7 @@
 **The hidden multilingual tax in your tokenizer — measured before you deploy.**
 
 [![PyPI](https://img.shields.io/pypi/v/asia-fertility.svg?color=blue)](https://pypi.org/project/asia-fertility/)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21069313.svg)](https://doi.org/10.5281/zenodo.21069313)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21069313-1682D4?logo=zenodo&logoColor=white)](https://doi.org/10.5281/zenodo.21069313)
 [![CI](https://github.com/Helmo21/asia-fertility/actions/workflows/ci.yml/badge.svg)](https://github.com/Helmo21/asia-fertility/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](pyproject.toml)
