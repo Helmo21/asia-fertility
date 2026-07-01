@@ -3,6 +3,7 @@
 **The hidden multilingual tax in your tokenizer — measured before you deploy.**
 
 [![PyPI](https://img.shields.io/pypi/v/asia-fertility.svg?color=blue)](https://pypi.org/project/asia-fertility/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21069313.svg)](https://doi.org/10.5281/zenodo.21069313)
 [![CI](https://github.com/Helmo21/asia-fertility/actions/workflows/ci.yml/badge.svg)](https://github.com/Helmo21/asia-fertility/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](pyproject.toml)
@@ -272,14 +273,15 @@ All tokenizer versions, price snapshot date, FX rates, and config hash are recor
 
 ## Paper
 
-Full writeup at [`paper/paper.pdf`](paper/paper.pdf) (14 pp). Cite as:
+Preprint on Zenodo: **[10.5281/zenodo.21069313](https://doi.org/10.5281/zenodo.21069313)** — full writeup at [`paper/paper.pdf`](paper/paper.pdf) (15 pp). Cite as:
 
 ```bibtex
-@misc{pedretti2026asianlanguagetax,
+@article{pedretti2026asianlanguagetax,
   title  = {The Asian Language Tax: Quantifying the Cost, Context, and Recall Penalty of Tokenizing Lower-Resource Asian Languages in Frontier LLMs},
   author = {Pedretti, Antoine},
   year   = {2026},
-  url    = {https://github.com/Helmo21/asia-fertility},
+  doi    = {10.5281/zenodo.21069313},
+  url    = {https://doi.org/10.5281/zenodo.21069313},
 }
 ```
 

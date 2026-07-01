@@ -41,3 +41,6 @@ data/
 # Docs build
 site/
 _site/
+
+# Local prep / brainstorm docs (not for the public repo)
+.teach-session/

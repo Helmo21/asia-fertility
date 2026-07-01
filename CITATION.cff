@@ -5,7 +5,7 @@ type: software
 authors:
   - family-names: Pedretti
     given-names: Antoine
-    orcid: "https://orcid.org/0000-0000-0000-0000"
+    orcid: "https://orcid.org/0009-0002-5334-2410"
 repository-code: "https://github.com/Helmo21/asia-fertility"
 url: "https://fertiscope.vercel.app"
 license: MIT
@@ -26,5 +26,7 @@ preferred-citation:
   authors:
     - family-names: Pedretti
       given-names: Antoine
+      orcid: "https://orcid.org/0009-0002-5334-2410"
   year: 2026
-  url: "https://github.com/Helmo21/asia-fertility/blob/main/paper/paper.pdf"
+  url: "https://doi.org/10.5281/zenodo.21069313"
+  doi: "10.5281/zenodo.21069313"
